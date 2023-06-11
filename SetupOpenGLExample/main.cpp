@@ -97,7 +97,7 @@ struct Screen{
 struct Camera{
     
     vec3 position;
-    vec3 lookPosition;
+    vec3 lookDir;
     vec3 up = vec3(0, 1, 0);
     
     float fovYDegrees = 45.0f;
@@ -106,7 +106,8 @@ struct Camera{
     Screen screen;
     
     mat4 GetViewingMatrix(){
-        return lookAt(position, lookPosition, up);
+        auto lookPos = position + lookDir;
+        return lookAt(position, lookPos, up);
     }
     
     mat4 GetProjectionMatrix(){
@@ -911,7 +912,7 @@ void UpdateCamera(){
     auto carTf = GetPlayerObj().transform;
     targetPos = carTf.position + carTf.Right() * offset.x + carTf.Up() * offset.y + carTf.Forward() * offset.z;
     camera.position = targetPos;
-    camera.lookPosition = carTf.position + carTf.Forward();
+    camera.lookDir = carTf.Forward();
 }
 
 void UpdateTime() {
