@@ -147,10 +147,6 @@ struct Object {
     vector<Mesh> meshes;
 };
 
-struct Ground {
-    Object obj;
-};
-
 // TODO: Make this the character controller.
 struct Car {
     float speed = 0.0f;
@@ -167,18 +163,15 @@ struct Input {
     Direction direction = Direction::Back;
 };
 
-struct Statue{
-    Object obj;
+struct Scene {
+    vector<Object> objects;
 };
 
+Scene scene;
 Car car;
-Statue armadillo;
-Statue bunny;
-Statue teapot;
 Camera camera;
 Input input;
 Time gameTime;
-Ground ground;
 int wireframeMode = 0;
 
 string GetPath(string originalPath){
@@ -771,27 +764,30 @@ void InitGround(){
 }
 
 void InitStatue(){
-    armadillo.obj.transform.position = vec3(15.0f, 0.0f, 15.0f);
-    armadillo.obj.transform.scale = vec3(5, 5, 5);
-    armadillo.obj.meshes.push_back(CreateMesh("armadillo.obj", "vert_statue.glsl", "frag_statue.glsl"));
-    auto programId = armadillo.obj.meshes[0].shader.programId;
+    auto armadillo = Object();
+    armadillo.transform.position = vec3(15.0f, 0.0f, 15.0f);
+    armadillo.transform.scale = vec3(5, 5, 5);
+    armadillo.meshes.push_back(CreateMesh("armadillo.obj", "vert_statue.glsl", "frag_statue.glsl"));
+    auto programId = armadillo.meshes[0].shader.programId;
     glUseProgram(programId);
     float color[] = {0.8f, 0.0f, 0.0f};
     int colorLoc = glGetUniformLocation(programId, "tint");
     glUniform3fv(colorLoc, 1, color);
     
-    bunny.obj.transform.position = vec3(-15, 0.0f, -15.0f);
-    bunny.obj.transform.scale = vec3(10, 10, 10);
-    bunny.obj.meshes.push_back(CreateMesh("bunny.obj", "vert_statue.glsl", "frag_statue.glsl"));
-    programId = bunny.obj.meshes[0].shader.programId;
+    auto bunny = Object();
+    bunny.transform.position = vec3(-15, 0.0f, -15.0f);
+    bunny.transform.scale = vec3(10, 10, 10);
+    bunny.meshes.push_back(CreateMesh("bunny.obj", "vert_statue.glsl", "frag_statue.glsl"));
+    programId = bunny.meshes[0].shader.programId;
     glUseProgram(programId);
     float color1[] = {0.8f, 0.8f, 0.0f};
     glUniform3fv(colorLoc, 1, color1);
     
-    teapot.obj.transform.position = vec3(-15, 0.0f, 15.0f);
-    teapot.obj.transform.scale = vec3(5, 5, 5);
-    teapot.obj.meshes.push_back(CreateMesh("teapot.obj", "vert_statue.glsl", "frag_statue.glsl"));
-    programId = teapot.obj.meshes[0].shader.programId;
+    auto teapot = Object();
+    teapot.transform.position = vec3(-15, 0.0f, 15.0f);
+    teapot.transform.scale = vec3(5, 5, 5);
+    teapot.meshes.push_back(CreateMesh("teapot.obj", "vert_statue.glsl", "frag_statue.glsl"));
+    programId = teapot.meshes[0].shader.programId;
     glUseProgram(programId);
     float color2[] = {0.0f, 0.8f, 0.8f};
     glUniform3fv(colorLoc, 1, color2);
@@ -829,13 +825,6 @@ void DrawMesh(const mat4& projectionMatrix, const mat4& viewingMatrix, const mat
     glUniformMatrix4fv(glGetUniformLocation(shaderId, "view"), 1, GL_FALSE, glm::value_ptr(viewingMatrix));
     glUniformMatrix4fv(glGetUniformLocation(shaderId, "model"), 1, GL_FALSE, glm::value_ptr(modelingMatrix));
     glUniform3fv(glGetUniformLocation(shaderId, "cameraPos"), 1, glm::value_ptr(camera.position));
-    
-    auto cubemapLocation = glGetUniformLocation(shaderId, "cubemap");
-    if(cubemapLocation != -1){
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, dynamicCubemap);
-        glUniform1i(cubemapLocation, 0);
-    }
     
     glBindBuffer(GL_ARRAY_BUFFER, mesh.gVertexAttribBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.gIndexBuffer);
@@ -970,13 +959,11 @@ void DrawGround(const mat4& projectionMatrix, const mat4& viewingMatrix){
 
 void Render(GLFWwindow* window){
     ClearScreen();
-            
+          
+    // TODO: Just Draw the whole scene
     auto projectionMatrix = camera.GetProjectionMatrix();
     auto viewingMatrix = camera.GetViewingMatrix();
     DrawObject(projectionMatrix, viewingMatrix, car.obj);
-    DrawObject(projectionMatrix, viewingMatrix, armadillo.obj);
-    DrawObject(projectionMatrix, viewingMatrix, bunny.obj);
-    DrawObject(projectionMatrix, viewingMatrix, teapot.obj);
     
     DrawGround(projectionMatrix, viewingMatrix);
     
