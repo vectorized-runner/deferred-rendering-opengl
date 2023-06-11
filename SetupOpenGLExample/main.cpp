@@ -143,6 +143,7 @@ struct Mesh {
 };
 
 struct Object {
+    string name;
     Transform transform;
     vector<Mesh> meshes;
 };
@@ -765,6 +766,7 @@ void InitGround(){
 
 void InitStatue(){
     auto armadillo = Object();
+    armadillo.name = "Armadillo";
     armadillo.transform.position = vec3(15.0f, 0.0f, 15.0f);
     armadillo.transform.scale = vec3(5, 5, 5);
     armadillo.meshes.push_back(CreateMesh("armadillo.obj", "vert_statue.glsl", "frag_statue.glsl"));
@@ -775,6 +777,7 @@ void InitStatue(){
     glUniform3fv(colorLoc, 1, color);
     
     auto bunny = Object();
+    bunny.name = "Bunny";
     bunny.transform.position = vec3(-15, 0.0f, -15.0f);
     bunny.transform.scale = vec3(10, 10, 10);
     bunny.meshes.push_back(CreateMesh("bunny.obj", "vert_statue.glsl", "frag_statue.glsl"));
@@ -784,6 +787,7 @@ void InitStatue(){
     glUniform3fv(colorLoc, 1, color1);
     
     auto teapot = Object();
+    teapot.name = "Teapot";
     teapot.transform.position = vec3(-15, 0.0f, 15.0f);
     teapot.transform.scale = vec3(5, 5, 5);
     teapot.meshes.push_back(CreateMesh("teapot.obj", "vert_statue.glsl", "frag_statue.glsl"));
