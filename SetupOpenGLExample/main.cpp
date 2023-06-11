@@ -151,7 +151,6 @@ struct Player {
 
 struct Input {
     int move = 0;
-    int rotate = 0;
     double mouseX;
     double mouseY;
     double mouseDeltaX;
@@ -507,18 +506,18 @@ void OnKeyAction(GLFWwindow* window, int key, int scancode, int action, int mods
     }
     else if(key == GLFW_KEY_A){
         if(isPress){
-            input.rotate = 1;
+            input.move = 2;
         }
         else{
-            input.rotate = 0;
+            input.move = 0;
         }
     }
     else if(key == GLFW_KEY_D){
         if(isPress){
-            input.rotate = -1;
+            input.move = 3;
         }
         else{
-            input.rotate = 0;
+            input.move = 0;
         }
     }
     else if(key == GLFW_KEY_SPACE){
@@ -873,10 +872,11 @@ void UpdatePlayer(){
     auto carVelocity = tf.Forward() * player.speed;
     tf.position += carVelocity * gameTime.deltaTime;
     
-    const float rotationDegreesPerSecond = 120.0f;
-    auto angle = rotationDegreesPerSecond * gameTime.deltaTime * input.rotate;
-    auto& carRotation = GetPlayerObj().transform.rotation;
-    carRotation = rotate(carRotation, radians(angle), vec3(0, 1, 0));
+    // TODO:
+    // const float rotationDegreesPerSecond = 120.0f;
+    // auto angle = rotationDegreesPerSecond * gameTime.deltaTime * input.rotate;
+    // auto& carRotation = GetPlayerObj().transform.rotation;
+    // carRotation = rotate(carRotation, radians(angle), vec3(0, 1, 0));
 }
 
 void UpdateCamera(){
