@@ -174,6 +174,7 @@ Camera camera;
 Input input;
 Time gameTime;
 int wireframeMode = 0;
+int renderMode = 0;
 
 string GetPath(string originalPath){
     // TODO: Replace after we're out of MAC
@@ -544,6 +545,11 @@ void OnKeyAction(GLFWwindow* window, int key, int scancode, int action, int mods
     else if(key == GLFW_KEY_T){
         if(isPress){
             input.direction = Direction::Front;
+        }
+    }
+    else if(key == GLFW_KEY_SPACE){
+        if(isPress){
+            renderMode = !renderMode;
         }
     }
 }
@@ -974,7 +980,7 @@ void DrawGround(const mat4& projectionMatrix, const mat4& viewingMatrix){
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
-void DrawScene(){
+void DrawSceneForward(){
     auto objectCount = scene.objects.size();
     auto projectionMatrix = camera.GetProjectionMatrix();
     auto viewingMatrix = camera.GetViewingMatrix();
@@ -982,6 +988,18 @@ void DrawScene(){
     for(int i = 0; i < objectCount; i++){
         const auto& obj = scene.objects[i];
         DrawObject(projectionMatrix, viewingMatrix, obj);
+    }
+}
+
+void DrawSceneDeferred(){
+    // TODO:
+}
+
+void DrawScene(){
+    if(renderMode == 0){
+        DrawSceneForward();
+    } else{
+        DrawSceneDeferred();
     }
 }
 
