@@ -152,6 +152,10 @@ struct Player {
 struct Input {
     int move = 0;
     int rotate = 0;
+    double mouseX;
+    double mouseY;
+    double mouseDeltaX;
+    double mouseDeltaY;
 };
 
 struct Scene {
@@ -948,9 +952,20 @@ void Render(GLFWwindow* window){
     glfwPollEvents();
 }
 
+void UpdateInput(GLFWwindow* window){
+    auto prevX = input.mouseX;
+    auto prevY = input.mouseY;
+    
+    glfwGetCursorPos(window, &input.mouseX, &input.mouseY);
+    
+    input.mouseDeltaX = input.mouseX - prevX;
+    input.mouseDeltaY = input.mouseY - prevY;
+}
+
 void ProgramLoop(GLFWwindow* window){
     while (!glfwWindowShouldClose(window))
     {
+        UpdateInput(window);
         RunSimulation();
         Render(window);
     }
