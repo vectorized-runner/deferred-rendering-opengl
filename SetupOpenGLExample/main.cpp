@@ -1052,31 +1052,6 @@ void RunSimulation(){
     UpdateCamera();
 }
 
-void DrawSkybox(){
-    
-    auto originalFov = camera.fovYDegrees;
-    camera.fovYDegrees = 90.0f;
-    
-    glDepthMask(GL_FALSE);
-    
-    auto shader = skybox.shader.programId;
-    glUseProgram(shader);
-    
-    // Removes position from viewing matrix
-    auto view = mat4(mat3(camera.GetViewingMatrix()));
-    auto projection = camera.GetProjectionMatrix();
-    
-    glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-    glUniformMatrix4fv(glGetUniformLocation(shader, "view"), 1, GL_FALSE, glm::value_ptr(view));
-    
-    glBindVertexArray(skybox.vao);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.cubemapTexture);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-    glDepthMask(GL_TRUE);
-
-    camera.fovYDegrees = originalFov;
-}
-
 void DrawGround(const mat4& projectionMatrix, const mat4& viewingMatrix){
     
     auto modelingMatrix = groundTransform.GetMatrix();
@@ -1097,9 +1072,7 @@ void DrawGround(const mat4& projectionMatrix, const mat4& viewingMatrix){
 
 void Render(GLFWwindow* window){
     ClearScreen();
-        
-    DrawSkybox();
-    
+            
     auto projectionMatrix = camera.GetProjectionMatrix();
     auto viewingMatrix = camera.GetViewingMatrix();
     DrawObject(projectionMatrix, viewingMatrix, car.obj);
