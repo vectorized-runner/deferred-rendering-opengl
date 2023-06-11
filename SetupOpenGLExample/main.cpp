@@ -142,68 +142,6 @@ struct Mesh {
     Shader shader;
 };
 
-struct Skybox{
-    Shader shader;
-    int cubemapTexture;
-    int vbo;
-    int vao;
-    
-    vector<string> faces
-    {
-        "right.png",
-        "left.png",
-        "top.png",
-        "bottom.png",
-        "front.png",
-        "back.png"
-    };
-
-    float vertices[108] = {
-        // positions
-        -1.0f,  1.0f, -1.0f,
-        -1.0f, -1.0f, -1.0f,
-         1.0f, -1.0f, -1.0f,
-         1.0f, -1.0f, -1.0f,
-         1.0f,  1.0f, -1.0f,
-        -1.0f,  1.0f, -1.0f,
-
-        -1.0f, -1.0f,  1.0f,
-        -1.0f, -1.0f, -1.0f,
-        -1.0f,  1.0f, -1.0f,
-        -1.0f,  1.0f, -1.0f,
-        -1.0f,  1.0f,  1.0f,
-        -1.0f, -1.0f,  1.0f,
-
-         1.0f, -1.0f, -1.0f,
-         1.0f, -1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f, -1.0f,
-         1.0f, -1.0f, -1.0f,
-
-        -1.0f, -1.0f,  1.0f,
-        -1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f, -1.0f,  1.0f,
-        -1.0f, -1.0f,  1.0f,
-
-        -1.0f,  1.0f, -1.0f,
-         1.0f,  1.0f, -1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-        -1.0f,  1.0f,  1.0f,
-        -1.0f,  1.0f, -1.0f,
-
-        -1.0f, -1.0f, -1.0f,
-        -1.0f, -1.0f,  1.0f,
-         1.0f, -1.0f, -1.0f,
-         1.0f, -1.0f, -1.0f,
-        -1.0f, -1.0f,  1.0f,
-         1.0f, -1.0f,  1.0f
-    };
-};
-
 struct Object {
     Transform transform;
     vector<Mesh> meshes;
@@ -213,6 +151,7 @@ struct Ground {
     Object obj;
 };
 
+// TODO: Make this the character controller.
 struct Car {
     float speed = 0.0f;
     
@@ -239,7 +178,6 @@ Statue teapot;
 Camera camera;
 Input input;
 Time gameTime;
-Skybox skybox;
 Ground ground;
 int wireframeMode = 0;
 
@@ -752,25 +690,6 @@ void InitCar(){
     car.obj.meshes.push_back(CreateMesh("cybertruck_windows.obj", "vert_window.glsl", "frag_window.glsl"));
 }
 
-void InitSkybox(){
-    GLuint cubeVAO, cubeVBO;
-    glGenVertexArrays(1, &cubeVAO);
-    glGenBuffers(1, &cubeVBO);
-    glBindVertexArray(cubeVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(skybox.vertices), &skybox.vertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-    glBindVertexArray(0);
-    skybox.vao = cubeVAO;
-    skybox.vbo = cubeVBO;
-    // cout << "CubeVao: " << cubeVAO << endl;
-    // cout << "CubeVbo: " << cubeVBO << endl;
-    
-    skybox.shader.programId = CreateShaderProgram(GetPath("vert_skybox.glsl").data(), GetPath("frag_skybox.glsl").data());
-    skybox.cubemapTexture = loadCubemap(skybox.faces);
-}
-
 Transform groundTransform;
 int groundShaderId;
 unsigned int groundVbo;
@@ -900,7 +819,6 @@ void InitProgram(){
     glEnable(GL_DEPTH_TEST);
     
     InitCar();
-    InitSkybox();
     InitGround();
     InitStatue();
     InitDynamic();
@@ -1058,13 +976,12 @@ void DrawGround(const mat4& projectionMatrix, const mat4& viewingMatrix){
     
     glUseProgram(groundShaderId);
     // bind textures on corresponding texture units
-    //glActiveTexture(GL_TEXTURE0);
+    // glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, ourTexture);
     
     glUniformMatrix4fv(glGetUniformLocation(groundShaderId, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
     glUniformMatrix4fv(glGetUniformLocation(groundShaderId, "view"), 1, GL_FALSE, glm::value_ptr(viewingMatrix));
     glUniformMatrix4fv(glGetUniformLocation(groundShaderId, "model"), 1, GL_FALSE, glm::value_ptr(modelingMatrix));
-
 
     glBindVertexArray(groundVao);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
