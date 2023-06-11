@@ -1046,7 +1046,7 @@ void UpdateTime() {
     gameTime.time = newTime;
 }
 
-void UpdateLogic(){
+void RunSimulation(){
     UpdateTime();
     UpdateCar();
     UpdateCamera();
@@ -1206,7 +1206,7 @@ void Render(GLFWwindow* window){
 void ProgramLoop(GLFWwindow* window){
     while (!glfwWindowShouldClose(window))
     {
-        UpdateLogic();
+        RunSimulation();
         Render(window);
     }
 }
