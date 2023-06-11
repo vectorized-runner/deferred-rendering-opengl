@@ -498,7 +498,7 @@ void OnKeyAction(GLFWwindow* window, int key, int scancode, int action, int mods
     }
     else if(key == GLFW_KEY_S){
         if(isPress){
-            input.move = -1;
+            input.move = 2;
         }
         else{
             input.move = 0;
@@ -506,7 +506,7 @@ void OnKeyAction(GLFWwindow* window, int key, int scancode, int action, int mods
     }
     else if(key == GLFW_KEY_A){
         if(isPress){
-            input.move = 2;
+            input.move = 3;
         }
         else{
             input.move = 0;
@@ -514,7 +514,7 @@ void OnKeyAction(GLFWwindow* window, int key, int scancode, int action, int mods
     }
     else if(key == GLFW_KEY_D){
         if(isPress){
-            input.move = 3;
+            input.move = 4;
         }
         else{
             input.move = 0;
