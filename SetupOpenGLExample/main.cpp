@@ -952,6 +952,8 @@ void DrawSceneForward(){
         const auto& obj = scene.objects[i];
         DrawObject(projectionMatrix, viewingMatrix, obj);
     }
+    
+    DrawGround(projectionMatrix, viewingMatrix);
 }
 
 void DrawSceneDeferred(){
