@@ -797,31 +797,12 @@ void InitStatue(){
     glUniform3fv(colorLoc, 1, color2);
 }
 
-GLuint fbo;
-GLuint dynamicCubemap;
-
-void InitDynamic(){
-    glGenFramebuffers(1, &fbo);
-    
-    glGenTextures(1, &dynamicCubemap);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, dynamicCubemap);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-    for (int i = 0; i < 6; ++i) {
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA8, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-    }
-}
-
 void InitProgram(){
     glEnable(GL_DEPTH_TEST);
     
     InitCar();
     InitGround();
     InitStatue();
-    InitDynamic();
 }
 
 void ClearScreen(){
