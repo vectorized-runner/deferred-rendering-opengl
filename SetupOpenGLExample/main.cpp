@@ -854,6 +854,26 @@ Object& GetPlayerObj(){
     return scene.objects[player.objIndex];
 }
 
+vec3 GetPlayerMoveVector(){
+    switch(input.move){
+        case 0:
+            return vec3(0, 0, 0);
+        case 1:
+            return GetPlayerObj().transform.Forward();
+        case 2:
+            return -GetPlayerObj().transform.Forward();
+        case 3:
+            return -GetPlayerObj().transform.Right();
+        case 4:
+            return GetPlayerObj().transform.Right();
+        default:
+        {
+            cout << "Unexpected code reached GetPlayerMoveVector" << endl;
+            return vec3(0, 0, 0);
+        }
+    }
+}
+
 void UpdatePlayer(){
     
     auto& tf = GetPlayerObj().transform;
