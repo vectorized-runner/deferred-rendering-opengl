@@ -1018,7 +1018,7 @@ int main()
     InitGlew();
     SetWindowTitle(window);
     
-    InitProgram();
+    InitProgram(window);
     
     RegisterKeyPressEvents(window);
     RegisterWindowResizeEvents(window);
