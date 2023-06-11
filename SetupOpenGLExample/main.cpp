@@ -659,15 +659,21 @@ void InitPlayer(){
     int colorLoc = glGetUniformLocation(programId, "tint");
     glUniform3fv(colorLoc, 1, color);
     
-    auto carObj = Object();
-    carObj.name = "Car";
-    carObj.meshes.push_back(bodyMesh);
-    carObj.meshes.push_back(CreateMesh("cybertruck_tires.obj", "vert_tire.glsl", "frag_tire.glsl"));
-    carObj.meshes.push_back(CreateMesh("cybertruck_windows.obj", "vert_window.glsl", "frag_window.glsl"));
+    auto playerObj = Object();
+    playerObj.name = "Player";
+    playerObj.meshes.push_back(bodyMesh);
+    playerObj.meshes.push_back(CreateMesh("cybertruck_tires.obj", "vert_tire.glsl", "frag_tire.glsl"));
+    playerObj.meshes.push_back(CreateMesh("cybertruck_windows.obj", "vert_window.glsl", "frag_window.glsl"));
     
+    playerObj.transform.position = vec3(0, 0, 0);
+    
+    auto forward = vec3(0.0, 0.0f, 1.0f); // The direction vector to look at
+    auto up = vec3(0.0f, 1.0f, 0.0f); // The up vector
+    auto rotation = quatLookAt(forward, up);
+    playerObj.transform.rotation = rotation;
+        
     auto index = scene.objects.size();
-    scene.objects.push_back(carObj);
-    
+    scene.objects.push_back(playerObj);
     player.objIndex = index;
 }
 
