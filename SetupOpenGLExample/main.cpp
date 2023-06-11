@@ -675,7 +675,7 @@ Mesh CreateMesh(const string& objPath, const string& vertexPath, const string& f
     return mesh;
 }
 
-void InitCar(){
+void InitPlayer(){
     auto bodyMesh = CreateMesh("cybertruck_body.obj", "vert_body.glsl", "frag_body.glsl");
     auto programId = bodyMesh.shader.programId;
     glUseProgram(programId);
@@ -814,7 +814,7 @@ void InitStatue(){
 void InitProgram(){
     glEnable(GL_DEPTH_TEST);
     
-    InitCar();
+    InitPlayer();
     InitGround();
     InitStatue();
 }
@@ -879,10 +879,11 @@ Object& GetPlayerObj(){
     return scene.objects[player.objIndex];
 }
 
-void UpdateCarPosition(){
+void UpdatePlayer(){
+    
     auto& tf = GetPlayerObj().transform;
     
-    DebugAssert(IsLengthEqual(tf.Forward(), 1.0f), "CarVelocity");
+    DebugAssert(IsLengthEqual(tf.Forward(), 1.0f), "PlayerVelocity");
     auto deltaSpeed = 0.0f;
     
     if(input.move != 0){
@@ -895,18 +896,11 @@ void UpdateCarPosition(){
     
     auto carVelocity = tf.Forward() * player.speed;
     tf.position += carVelocity * gameTime.deltaTime;
-}
-
-void UpdateCarRotation(){
+    
     const float rotationDegreesPerSecond = 120.0f;
     auto angle = rotationDegreesPerSecond * gameTime.deltaTime * input.rotate;
     auto& carRotation = GetPlayerObj().transform.rotation;
     carRotation = rotate(carRotation, radians(angle), vec3(0, 1, 0));
-}
-
-void UpdateCar(){
-    UpdateCarPosition();
-    UpdateCarRotation();
 }
 
 void UpdateCamera(){
@@ -949,7 +943,7 @@ void UpdateTime() {
 
 void RunSimulation(){
     UpdateTime();
-    UpdateCar();
+    UpdatePlayer();
     UpdateCamera();
 }
 
