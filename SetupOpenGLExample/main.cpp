@@ -57,13 +57,6 @@ struct Face
     GLuint vIndex[3], tIndex[3], nIndex[3];
 };
 
-enum class Direction {
-    Left,
-    Right,
-    Front,
-    Back
-};
-
 struct Time {
     float time;
     float deltaTime;
@@ -159,7 +152,6 @@ struct Player {
 struct Input {
     int move = 0;
     int rotate = 0;
-    Direction direction = Direction::Back;
 };
 
 struct Scene {
@@ -527,22 +519,22 @@ void OnKeyAction(GLFWwindow* window, int key, int scancode, int action, int mods
     }
     else if(key == GLFW_KEY_Q){
         if(isPress){
-            input.direction = Direction::Left;
+            input.move = 1;
         }
     }
     else if(key == GLFW_KEY_E){
         if(isPress){
-            input.direction = Direction::Right;
+            input.move = 2;
         }
     }
     else if(key == GLFW_KEY_R){
         if(isPress){
-            input.direction = Direction::Back;
+            input.move = 3;
         }
     }
     else if(key == GLFW_KEY_T){
         if(isPress){
-            input.direction = Direction::Front;
+            input.move = 4;
         }
     }
     else if(key == GLFW_KEY_SPACE){
@@ -909,26 +901,7 @@ void UpdateCamera(){
     
     vec3 targetPos;
     auto carTf = GetPlayerObj().transform;
-    
-    switch(input.direction){
-        case Direction::Left:{
-            targetPos = carTf.position + carTf.Right() * distance;
-            break;
-        }
-        case Direction::Back:{
-            targetPos = carTf.position - carTf.Forward() * distance;
-            break;
-        }
-        case Direction::Front:{
-            targetPos = carTf.position + carTf.Forward() * distance;
-            break;
-        }
-        case Direction::Right:{
-            targetPos = carTf.position - carTf.Right() * distance;
-            break;
-        }
-    }
-    
+    targetPos = carTf.position - carTf.Forward() * distance;
     targetPos += vec3(0, 1, 0) * upOffset;
     
     camera.position = targetPos;
