@@ -950,6 +950,11 @@ void DrawSceneForward(){
     
     for(int i = 0; i < objectCount; i++){
         const auto& obj = scene.objects[i];
+        
+        // TODO: Remove later
+        if(obj.name == "Player")
+            continue;
+        
         DrawObject(projectionMatrix, viewingMatrix, obj);
     }
     
