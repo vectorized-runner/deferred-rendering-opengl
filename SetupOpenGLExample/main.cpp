@@ -517,26 +517,6 @@ void OnKeyAction(GLFWwindow* window, int key, int scancode, int action, int mods
             input.rotate = 0;
         }
     }
-    else if(key == GLFW_KEY_Q){
-        if(isPress){
-            input.move = 1;
-        }
-    }
-    else if(key == GLFW_KEY_E){
-        if(isPress){
-            input.move = 2;
-        }
-    }
-    else if(key == GLFW_KEY_R){
-        if(isPress){
-            input.move = 3;
-        }
-    }
-    else if(key == GLFW_KEY_T){
-        if(isPress){
-            input.move = 4;
-        }
-    }
     else if(key == GLFW_KEY_SPACE){
         if(isPress){
             renderMode = !renderMode;
