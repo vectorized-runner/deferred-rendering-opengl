@@ -868,6 +868,11 @@ Object& GetPlayerObj(){
     return scene.objects[player.objIndex];
 }
 
+
+vec3 ProjectOnPlane(vec3 vec, vec3 planeNormal){
+    return vec - dot(vec, planeNormal) * planeNormal;
+}
+
 vec3 GetPlayerMoveVector(){
     
     auto& tf = GetPlayerObj().transform;
@@ -880,7 +885,7 @@ vec3 GetPlayerMoveVector(){
         return vec3(0, 0, 0);
     }
     
-    return normalize(sum);
+    return normalize(ProjectOnPlane(sum, vec3(0, 1, 0)));
 }
 
 void UpdatePlayer(){
@@ -902,7 +907,6 @@ void UpdatePlayer(){
     auto rotateX = angleAxis(radians(rotateAnglesX), right);
     
     auto euler = degrees(eulerAngles(tf.rotation));
-    
     
     tf.rotation = tf.rotation * rotateX * rotateZ;
     
