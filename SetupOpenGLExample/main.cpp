@@ -680,7 +680,7 @@ unsigned int groundEbo;
 unsigned int ourTexture;
 
 void InitGround(){
-    groundTransform.position = vec3(0, -10, 0);
+    groundTransform.position = vec3(0, -0.1f, 0);
     groundTransform.rotation = rotate(groundTransform.rotation, radians(90.0f), vec3(1.0f, 0.0f, 0.0f));
     groundTransform.scale = vec3(1000.0f, 1000.0f, 1000.0f);
     
@@ -786,6 +786,27 @@ void InitScene(){
     float color2[] = {0.0f, 0.8f, 0.8f};
     glUniform3fv(colorLoc, 1, color2);
     scene.objects.push_back(teapot);
+    
+    int cubeCountX = 100;
+    int cubeCountZ = 100;
+    int idx = 0;
+    auto separation = 20.0f;
+    auto scaleY = 5.0f;
+    auto scaleXZ = 2.0f;
+    
+    for(int x = 0; x < cubeCountX; x++){
+        for(int z = 0; z < cubeCountZ; z++){
+            auto cube = Object();
+            cube.name = "Cube " + to_string(idx);
+            cube.transform.position = vec3(x * separation, scaleY, z * separation);
+            cube.transform.scale = vec3(scaleXZ, scaleY, scaleXZ);
+            cube.meshIndices.push_back(CreateMesh("cube.obj", "vert_statue.glsl", "frag_statue.glsl"));
+        
+            scene.objects.push_back(cube);
+            
+            idx++;
+        }
+    }
 }
 
 void InitProgram(GLFWwindow* window){
