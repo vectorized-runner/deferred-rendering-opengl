@@ -170,6 +170,7 @@ Input input;
 Time gameTime;
 int wireframeMode = 0;
 int renderMode = 0;
+bool firstFrame = true;
 
 string GetPath(string originalPath){
     // TODO: Replace after we're out of MAC
@@ -925,6 +926,7 @@ void RunSimulation(){
     UpdateTime();
     UpdatePlayer();
     UpdateCamera();
+    firstFrame = false;
 }
 
 void DrawGround(const mat4& projectionMatrix, const mat4& viewingMatrix){
@@ -988,8 +990,14 @@ void UpdateInput(GLFWwindow* window){
     
     glfwGetCursorPos(window, &input.mouseX, &input.mouseY);
     
-    input.mouseDeltaX = input.mouseX - prevX;
-    input.mouseDeltaY = input.mouseY - prevY;
+    if(firstFrame) {
+        input.mouseDeltaX = 0;
+        input.mouseDeltaY = 0;
+    }
+    else{
+        input.mouseDeltaX = input.mouseX - prevX;
+        input.mouseDeltaY = input.mouseY - prevY;
+    }
 }
 
 void ProgramLoop(GLFWwindow* window){
