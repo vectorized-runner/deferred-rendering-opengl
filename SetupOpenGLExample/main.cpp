@@ -140,7 +140,7 @@ struct Mesh {
 struct Object {
     string name;
     Transform transform;
-    vector<Mesh> meshes;
+    vector<int> meshIndices;
 };
 
 struct Player {
@@ -174,17 +174,16 @@ int wireframeMode = 0;
 int renderMode = 0;
 bool firstFrame = true;
 
-bool IsMeshExists(const string& path){
+int GetMeshIndex(const string& path){
     auto meshCount = scene.meshes.size();
     
     for(int i = 0; i < meshCount; i++){
         auto& mesh = scene.meshes[i];
         if(mesh.path == path){
-            return true;
+            return i;
         }
     }
-    
-    return false;
+    return -1;
 }
 
 string GetPath(string originalPath){
@@ -625,18 +624,31 @@ int CreateShaderProgram(const char* vertexShaderName, const char* fragmentShader
     return shaderProgramId;
 }
 
-Mesh CreateMesh(const string& objPath, const string& vertexPath, const string& fragPath){
+const Mesh& GetMesh(int index){
+    return scene.meshes[index];
+}
+
+
+int CreateMesh(const string& objPath, const string& vertexPath, const string& fragPath){
+    auto idx = GetMeshIndex(objPath);
+    if(idx != -1){
+        return idx;
+    }
+    
     Mesh mesh;
+    mesh.path = objPath;
     assert(ParseObj(GetPath(objPath), mesh));
     mesh.shader.programId = CreateShaderProgram(GetPath(vertexPath).data(), GetPath(fragPath).data());
     InitVBO(mesh);
+    idx = scene.meshes.size();
+    scene.meshes.push_back(mesh);
     
-    return mesh;
+    return idx;
 }
 
 void InitPlayer(){
     auto bodyMesh = CreateMesh("cybertruck_body.obj", "vert_body.glsl", "frag_body.glsl");
-    auto programId = bodyMesh.shader.programId;
+    auto programId = GetMesh(bodyMesh).shader.programId;
     glUseProgram(programId);
     float color[] = {0.0f, 0.3f, 0.0f};
     int colorLoc = glGetUniformLocation(programId, "tint");
@@ -644,9 +656,9 @@ void InitPlayer(){
     
     auto playerObj = Object();
     playerObj.name = "Player";
-    playerObj.meshes.push_back(bodyMesh);
-    playerObj.meshes.push_back(CreateMesh("cybertruck_tires.obj", "vert_tire.glsl", "frag_tire.glsl"));
-    playerObj.meshes.push_back(CreateMesh("cybertruck_windows.obj", "vert_window.glsl", "frag_window.glsl"));
+    playerObj.meshIndices.push_back(bodyMesh);
+    playerObj.meshIndices.push_back(CreateMesh("cybertruck_tires.obj", "vert_tire.glsl", "frag_tire.glsl"));
+    playerObj.meshIndices.push_back(CreateMesh("cybertruck_windows.obj", "vert_window.glsl", "frag_window.glsl"));
     
     playerObj.transform.position = vec3(0, 0, 0);
     
@@ -740,13 +752,13 @@ void InitGround(){
     glUniform1i(glGetUniformLocation(groundShaderId, "ourTexture"), 0);
 }
 
-void InitStatue(){
+void InitScene(){
     auto armadillo = Object();
     armadillo.name = "Armadillo";
     armadillo.transform.position = vec3(15.0f, 0.0f, 15.0f);
     armadillo.transform.scale = vec3(5, 5, 5);
-    armadillo.meshes.push_back(CreateMesh("armadillo.obj", "vert_statue.glsl", "frag_statue.glsl"));
-    auto programId = armadillo.meshes[0].shader.programId;
+    armadillo.meshIndices.push_back(CreateMesh("armadillo.obj", "vert_statue.glsl", "frag_statue.glsl"));
+    auto programId = GetMesh(armadillo.meshIndices[0]).shader.programId;
     glUseProgram(programId);
     float color[] = {0.8f, 0.0f, 0.0f};
     int colorLoc = glGetUniformLocation(programId, "tint");
@@ -757,8 +769,8 @@ void InitStatue(){
     bunny.name = "Bunny";
     bunny.transform.position = vec3(-15, 0.0f, -15.0f);
     bunny.transform.scale = vec3(10, 10, 10);
-    bunny.meshes.push_back(CreateMesh("bunny.obj", "vert_statue.glsl", "frag_statue.glsl"));
-    programId = bunny.meshes[0].shader.programId;
+    bunny.meshIndices.push_back(CreateMesh("bunny.obj", "vert_statue.glsl", "frag_statue.glsl"));
+    programId = GetMesh(bunny.meshIndices[0]).shader.programId;
     glUseProgram(programId);
     float color1[] = {0.8f, 0.8f, 0.0f};
     glUniform3fv(colorLoc, 1, color1);
@@ -768,8 +780,8 @@ void InitStatue(){
     teapot.name = "Teapot";
     teapot.transform.position = vec3(-15, 0.0f, 15.0f);
     teapot.transform.scale = vec3(5, 5, 5);
-    teapot.meshes.push_back(CreateMesh("teapot.obj", "vert_statue.glsl", "frag_statue.glsl"));
-    programId = teapot.meshes[0].shader.programId;
+    teapot.meshIndices.push_back(CreateMesh("teapot.obj", "vert_statue.glsl", "frag_statue.glsl"));
+    programId = GetMesh(teapot.meshIndices[0]).shader.programId;
     glUseProgram(programId);
     float color2[] = {0.0f, 0.8f, 0.8f};
     glUniform3fv(colorLoc, 1, color2);
@@ -781,7 +793,7 @@ void InitProgram(GLFWwindow* window){
     
     InitPlayer();
     InitGround();
-    InitStatue();
+    InitScene();
     
     // Hide the cursor
     // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
@@ -826,8 +838,9 @@ void DrawMesh(const mat4& projectionMatrix, const mat4& viewingMatrix, const mat
 void DrawObject(const mat4& projectionMatrix, const mat4& viewingMatrix, const Object& obj) {
     const auto modelingMatrix = obj.transform.GetMatrix();
     
-    for(int i = 0; i < obj.meshes.size(); i++){
-        DrawMesh(projectionMatrix, viewingMatrix, modelingMatrix, obj.meshes[i]);
+    for(int i = 0; i < obj.meshIndices.size(); i++){
+        auto& mesh = GetMesh(obj.meshIndices[i]);
+        DrawMesh(projectionMatrix, viewingMatrix, modelingMatrix, mesh);
     }
 }
 
