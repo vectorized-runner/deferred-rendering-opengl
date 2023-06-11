@@ -148,14 +148,12 @@ struct Object {
     vector<Mesh> meshes;
 };
 
-// TODO: Make this the character controller.
-struct Car {
+struct Player {
     float speed = 0.0f;
 
     int objIndex;
     
-    static constexpr float InputAcceleration = 25.0f;
-    static constexpr float Deceleration = 10.0f;
+    static constexpr float MoveSpeed = 20.0f;
 };
 
 struct Input {
@@ -169,7 +167,7 @@ struct Scene {
 };
 
 Scene scene;
-Car car;
+Player player;
 Camera camera;
 Input input;
 Time gameTime;
@@ -694,7 +692,7 @@ void InitCar(){
     auto index = scene.objects.size();
     scene.objects.push_back(carObj);
     
-    car.objIndex = index;
+    player.objIndex = index;
 }
 
 Transform groundTransform;
@@ -877,40 +875,32 @@ bool IsLengthEqual(vec3 v, float l){
     return abs(length(v) - l) < 0.001f;
 }
 
-Object& GetCarObj(){
-    return scene.objects[car.objIndex];
+Object& GetPlayerObj(){
+    return scene.objects[player.objIndex];
 }
 
 void UpdateCarPosition(){
-    auto& tf = GetCarObj().transform;
+    auto& tf = GetPlayerObj().transform;
     
     DebugAssert(IsLengthEqual(tf.Forward(), 1.0f), "CarVelocity");
     auto deltaSpeed = 0.0f;
     
     if(input.move != 0){
-        auto carAccel = Car::InputAcceleration * input.move;
+        auto carAccel = Player::MoveSpeed * input.move;
         deltaSpeed = carAccel * gameTime.deltaTime;
-        car.speed += deltaSpeed;
+        player.speed += deltaSpeed;
     }
-    else{
-        auto direction = car.speed > 0.0f ? -1 : 1;
-        auto carAccel = Car::Deceleration * direction;
-        deltaSpeed = carAccel * gameTime.deltaTime;
-        if(abs(deltaSpeed) > abs(car.speed)){
-             deltaSpeed = -car.speed;
-        }
-        
-    }
-    car.speed += deltaSpeed;
+
+    player.speed += deltaSpeed;
     
-    auto carVelocity = tf.Forward() * car.speed;
+    auto carVelocity = tf.Forward() * player.speed;
     tf.position += carVelocity * gameTime.deltaTime;
 }
 
 void UpdateCarRotation(){
     const float rotationDegreesPerSecond = 120.0f;
     auto angle = rotationDegreesPerSecond * gameTime.deltaTime * input.rotate;
-    auto& carRotation = GetCarObj().transform.rotation;
+    auto& carRotation = GetPlayerObj().transform.rotation;
     carRotation = rotate(carRotation, radians(angle), vec3(0, 1, 0));
 }
 
@@ -924,7 +914,7 @@ void UpdateCamera(){
     const float upOffset = 5.0f;
     
     vec3 targetPos;
-    auto carTf = GetCarObj().transform;
+    auto carTf = GetPlayerObj().transform;
     
     switch(input.direction){
         case Direction::Left:{
