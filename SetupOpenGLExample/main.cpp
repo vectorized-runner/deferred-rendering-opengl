@@ -100,7 +100,7 @@ struct Camera{
     vec3 lookDir;
     vec3 up = vec3(0, 1, 0);
     
-    float fovYDegrees = 45.0f;
+    float fovYDegrees = 60.0f;
     float near = 0.0001f;
     float far = 10000.0f;
     Screen screen;
