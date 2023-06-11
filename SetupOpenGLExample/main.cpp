@@ -150,7 +150,8 @@ struct Player {
 };
 
 struct Input {
-    int move = 0;
+    float moveForward;
+    float moveRight;
     double mouseX;
     double mouseY;
     double mouseDeltaX;
@@ -490,34 +491,34 @@ void OnKeyAction(GLFWwindow* window, int key, int scancode, int action, int mods
     }
     else if(key == GLFW_KEY_W){
         if(isPress){
-            input.move = 1;
+            input.moveForward = 1;
         }
         else{
-            input.move = 0;
+            input.moveForward = 0;
         }
     }
     else if(key == GLFW_KEY_S){
         if(isPress){
-            input.move = 2;
+            input.moveForward = -1;
         }
         else{
-            input.move = 0;
+            input.moveForward = 0;
         }
     }
     else if(key == GLFW_KEY_A){
         if(isPress){
-            input.move = 3;
+            input.moveRight = -1;
         }
         else{
-            input.move = 0;
+            input.moveRight = 0;
         }
     }
     else if(key == GLFW_KEY_D){
         if(isPress){
-            input.move = 4;
+            input.moveRight = 1;
         }
         else{
-            input.move = 0;
+            input.moveRight = 0;
         }
     }
     else if(key == GLFW_KEY_SPACE){
@@ -855,34 +856,27 @@ Object& GetPlayerObj(){
 }
 
 vec3 GetPlayerMoveVector(){
-    switch(input.move){
-        case 0:
-            return vec3(0, 0, 0);
-        case 1:
-            return GetPlayerObj().transform.Forward();
-        case 2:
-            return -GetPlayerObj().transform.Forward();
-        case 3:
-            return GetPlayerObj().transform.Right();
-        case 4:
-            return -GetPlayerObj().transform.Right();
-        default:
-        {
-            cout << "Unexpected code reached GetPlayerMoveVector" << endl;
-            return vec3(0, 0, 0);
-        }
+    
+    auto& tf = GetPlayerObj().transform;
+    auto forward = input.moveForward * tf.Forward();
+    // Not sure why this needs to be negative
+    auto right = -input.moveRight * tf.Right();
+    auto sum = forward + right;
+    
+    if(length(sum) < 0.01f){
+        return vec3(0, 0, 0);
     }
+    
+    return normalize(sum);
 }
 
 void UpdatePlayer(){
     
     auto vec = GetPlayerMoveVector();
-    if (length(vec) > 0.01f){
-        auto& tf = GetPlayerObj().transform;
-        auto dt = gameTime.deltaTime;
-        auto deltaMove = vec * Player::MoveSpeed * dt;
-        tf.position += deltaMove;
-    }
+    auto& tf = GetPlayerObj().transform;
+    auto dt = gameTime.deltaTime;
+    auto deltaMove = vec * Player::MoveSpeed * dt;
+    tf.position += deltaMove;
     
     // TODO:
     // const float rotationDegreesPerSecond = 120.0f;
