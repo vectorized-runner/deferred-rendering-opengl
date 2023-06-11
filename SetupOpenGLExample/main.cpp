@@ -151,8 +151,8 @@ struct Object {
 // TODO: Make this the character controller.
 struct Car {
     float speed = 0.0f;
-    
-    Object obj;
+
+    int objIndex;
     
     static constexpr float InputAcceleration = 25.0f;
     static constexpr float Deceleration = 10.0f;
@@ -679,9 +679,16 @@ void InitCar(){
     int colorLoc = glGetUniformLocation(programId, "tint");
     glUniform3fv(colorLoc, 1, color);
     
-    car.obj.meshes.push_back(bodyMesh);
-    car.obj.meshes.push_back(CreateMesh("cybertruck_tires.obj", "vert_tire.glsl", "frag_tire.glsl"));
-    car.obj.meshes.push_back(CreateMesh("cybertruck_windows.obj", "vert_window.glsl", "frag_window.glsl"));
+    auto carObj = Object();
+    carObj.name = "Car";
+    carObj.meshes.push_back(bodyMesh);
+    carObj.meshes.push_back(CreateMesh("cybertruck_tires.obj", "vert_tire.glsl", "frag_tire.glsl"));
+    carObj.meshes.push_back(CreateMesh("cybertruck_windows.obj", "vert_window.glsl", "frag_window.glsl"));
+    
+    auto index = scene.objects.size();
+    scene.objects.push_back(carObj);
+    
+    car.objIndex = index;
 }
 
 Transform groundTransform;
@@ -775,6 +782,7 @@ void InitStatue(){
     float color[] = {0.8f, 0.0f, 0.0f};
     int colorLoc = glGetUniformLocation(programId, "tint");
     glUniform3fv(colorLoc, 1, color);
+    scene.objects.push_back(armadillo);
     
     auto bunny = Object();
     bunny.name = "Bunny";
@@ -785,6 +793,7 @@ void InitStatue(){
     glUseProgram(programId);
     float color1[] = {0.8f, 0.8f, 0.0f};
     glUniform3fv(colorLoc, 1, color1);
+    scene.objects.push_back(bunny);
     
     auto teapot = Object();
     teapot.name = "Teapot";
@@ -795,6 +804,7 @@ void InitStatue(){
     glUseProgram(programId);
     float color2[] = {0.0f, 0.8f, 0.8f};
     glUniform3fv(colorLoc, 1, color2);
+    scene.objects.push_back(teapot);
 }
 
 void InitProgram(){
@@ -861,9 +871,12 @@ bool IsLengthEqual(vec3 v, float l){
     return abs(length(v) - l) < 0.001f;
 }
 
+Object& GetCarObj(){
+    return scene.objects[car.objIndex];
+}
 
 void UpdateCarPosition(){
-    auto& tf = car.obj.transform;
+    auto& tf = GetCarObj().transform;
     
     DebugAssert(IsLengthEqual(tf.Forward(), 1.0f), "CarVelocity");
     auto deltaSpeed = 0.0f;
@@ -891,7 +904,7 @@ void UpdateCarPosition(){
 void UpdateCarRotation(){
     const float rotationDegreesPerSecond = 120.0f;
     auto angle = rotationDegreesPerSecond * gameTime.deltaTime * input.rotate;
-    auto& carRotation = car.obj.transform.rotation;
+    auto& carRotation = GetCarObj().transform.rotation;
     carRotation = rotate(carRotation, radians(angle), vec3(0, 1, 0));
 }
 
@@ -905,7 +918,7 @@ void UpdateCamera(){
     const float upOffset = 5.0f;
     
     vec3 targetPos;
-    auto carTf = car.obj.transform;
+    auto carTf = GetCarObj().transform;
     
     switch(input.direction){
         case Direction::Left:{
@@ -961,15 +974,20 @@ void DrawGround(const mat4& projectionMatrix, const mat4& viewingMatrix){
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
-void Render(GLFWwindow* window){
-    ClearScreen();
-          
-    // TODO: Just Draw the whole scene
+void DrawScene(){
+    auto objectCount = scene.objects.size();
     auto projectionMatrix = camera.GetProjectionMatrix();
     auto viewingMatrix = camera.GetViewingMatrix();
-    DrawObject(projectionMatrix, viewingMatrix, car.obj);
     
-    DrawGround(projectionMatrix, viewingMatrix);
+    for(int i = 0; i < objectCount; i++){
+        const auto& obj = scene.objects[i];
+        DrawObject(projectionMatrix, viewingMatrix, obj);
+    }
+}
+
+void Render(GLFWwindow* window){
+    ClearScreen();
+    DrawScene();
     
     glfwSwapBuffers(window);
     glfwPollEvents();
