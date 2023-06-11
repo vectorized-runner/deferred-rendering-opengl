@@ -787,12 +787,17 @@ void InitStatue(){
     scene.objects.push_back(teapot);
 }
 
-void InitProgram(){
+void InitProgram(GLFWwindow* window){
     glEnable(GL_DEPTH_TEST);
     
     InitPlayer();
     InitGround();
     InitStatue();
+    
+    // Hide the cursor
+    // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 }
 
 void ClearScreen(){
