@@ -122,6 +122,7 @@ struct Shader {
 };
 
 struct Mesh {
+    string path;
     vector<Vertex> vertices;
     vector<Normal> normals;
     vector<Texture> textures;
@@ -161,6 +162,7 @@ struct Input {
 
 struct Scene {
     vector<Object> objects;
+    vector<Mesh> meshes;
 };
 
 Scene scene;
@@ -171,6 +173,19 @@ Time gameTime;
 int wireframeMode = 0;
 int renderMode = 0;
 bool firstFrame = true;
+
+bool IsMeshExists(const string& path){
+    auto meshCount = scene.meshes.size();
+    
+    for(int i = 0; i < meshCount; i++){
+        auto& mesh = scene.meshes[i];
+        if(mesh.path == path){
+            return true;
+        }
+    }
+    
+    return false;
+}
 
 string GetPath(string originalPath){
     // TODO: Replace after we're out of MAC
