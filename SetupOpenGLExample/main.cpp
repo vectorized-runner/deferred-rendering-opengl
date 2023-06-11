@@ -244,7 +244,9 @@ Ground ground;
 int wireframeMode = 0;
 
 string GetPath(string originalPath){
-    return originalPath;
+    // TODO: Replace after we're out of MAC
+    return "/Users/bartubas/Homeworks/deferred-rendering-project/SetupOpenGLExample/" + originalPath;
+    // return originalPath;
 }
 
 unsigned int loadCubemap(vector<std::string> faces)
