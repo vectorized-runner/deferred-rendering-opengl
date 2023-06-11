@@ -889,29 +889,23 @@ void UpdatePlayer(){
     float rotateAnglesX = rotateMultiplier * -input.mouseDeltaX;
     auto rotateX = angleAxis(radians(rotateAnglesX), up);
     
-    tf.rotation = tf.rotation * rotateX;
+    auto right = vec3(1, 0, 0);
+    float rotateAnglesY = rotateMultiplier * input.mouseDeltaY;
+    auto rotateY = angleAxis(radians(rotateAnglesY), right);
     
-    //auto rotateAnglesY = rotateMultiplier * input.mouseDeltaY;
+    tf.rotation = tf.rotation * rotateX * rotateY;
     
-    
-    // TODO:
-    // const float rotationDegreesPerSecond = 120.0f;
-    // auto angle = rotationDegreesPerSecond * gameTime.deltaTime * input.rotate;
-    // auto& carRotation = GetPlayerObj().transform.rotation;
-    // carRotation = rotate(carRotation, radians(angle), vec3(0, 1, 0));
+    // TODO: Player model should have constant rotation relative to the Camera, achieve that.
 }
 
 void UpdateCamera(){
-    const float distance = 20.0f;
-    const float upOffset = 5.0f;
+    vec3 offset = vec3(0.0f, 5.0f, -5.0f);
     
     vec3 targetPos;
     auto carTf = GetPlayerObj().transform;
-    targetPos = carTf.position - carTf.Forward() * distance;
-    targetPos += vec3(0, 1, 0) * upOffset;
-    
+    targetPos = carTf.position + carTf.Right() * offset.x + carTf.Up() * offset.y + carTf.Forward() * offset.z;
     camera.position = targetPos;
-    camera.lookPosition = carTf.position;
+    camera.lookPosition = carTf.position + carTf.Forward();
 }
 
 void UpdateTime() {
