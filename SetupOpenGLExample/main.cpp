@@ -878,6 +878,17 @@ void UpdatePlayer(){
     auto deltaMove = vec * Player::MoveSpeed * dt;
     tf.position += deltaMove;
     
+    // Rotate left by mouseScrollX * constant
+    const float rotateMultiplier = 0.5f;
+    auto up = vec3(0, 1, 0);
+    float rotateAnglesX = rotateMultiplier * -input.mouseDeltaX;
+    auto rotateX = angleAxis(radians(rotateAnglesX), up);
+    
+    tf.rotation = tf.rotation * rotateX;
+    
+    //auto rotateAnglesY = rotateMultiplier * input.mouseDeltaY;
+    
+    
     // TODO:
     // const float rotationDegreesPerSecond = 120.0f;
     // auto angle = rotationDegreesPerSecond * gameTime.deltaTime * input.rotate;
