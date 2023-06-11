@@ -863,9 +863,9 @@ vec3 GetPlayerMoveVector(){
         case 2:
             return -GetPlayerObj().transform.Forward();
         case 3:
-            return -GetPlayerObj().transform.Right();
-        case 4:
             return GetPlayerObj().transform.Right();
+        case 4:
+            return -GetPlayerObj().transform.Right();
         default:
         {
             cout << "Unexpected code reached GetPlayerMoveVector" << endl;
@@ -876,21 +876,13 @@ vec3 GetPlayerMoveVector(){
 
 void UpdatePlayer(){
     
-    auto& tf = GetPlayerObj().transform;
-    
-    DebugAssert(IsLengthEqual(tf.Forward(), 1.0f), "PlayerVelocity");
-    auto deltaSpeed = 0.0f;
-    
-    if(input.move != 0){
-        auto carAccel = Player::MoveSpeed * input.move;
-        deltaSpeed = carAccel * gameTime.deltaTime;
-        player.speed += deltaSpeed;
+    auto vec = GetPlayerMoveVector();
+    if (length(vec) > 0.01f){
+        auto& tf = GetPlayerObj().transform;
+        auto dt = gameTime.deltaTime;
+        auto deltaMove = vec * Player::MoveSpeed * dt;
+        tf.position += deltaMove;
     }
-
-    player.speed += deltaSpeed;
-    
-    auto carVelocity = tf.Forward() * player.speed;
-    tf.position += carVelocity * gameTime.deltaTime;
     
     // TODO:
     // const float rotationDegreesPerSecond = 120.0f;
