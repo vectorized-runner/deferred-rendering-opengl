@@ -930,9 +930,13 @@ void DrawMesh(const mat4& projectionMatrix, const mat4& viewingMatrix, const mat
     glBindVertexArray(mesh.vao);
 
     glUniformMatrix4fv(glGetUniformLocation(shaderId, "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+    CheckError();
     glUniformMatrix4fv(glGetUniformLocation(shaderId, "viewingMatrix"), 1, GL_FALSE, glm::value_ptr(viewingMatrix));
+    CheckError();
     glUniformMatrix4fv(glGetUniformLocation(shaderId, "modelingMatrix"), 1, GL_FALSE, glm::value_ptr(modelingMatrix));
+    CheckError();
     glUniform3fv(glGetUniformLocation(shaderId, "cameraPos"), 1, glm::value_ptr(camera.position));
+    CheckError();
     
     glBindBuffer(GL_ARRAY_BUFFER, mesh.gVertexAttribBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.gIndexBuffer);
