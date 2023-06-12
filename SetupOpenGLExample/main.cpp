@@ -670,18 +670,8 @@ int CreateMesh(const string& objPath, const string& vertexPath, const string& fr
 }
 
 void InitPlayer(){
-    auto bodyMesh = CreateMesh("cybertruck_body.obj", "vert_body.glsl", "frag_body.glsl");
-    auto programId = GetMesh(bodyMesh).shader.programId;
-    glUseProgram(programId);
-    float color[] = {0.0f, 0.3f, 0.0f};
-    int colorLoc = glGetUniformLocation(programId, "tint");
-    glUniform3fv(colorLoc, 1, color);
-    
     auto playerObj = Object();
     playerObj.name = "Player";
-    playerObj.meshIndices.push_back(bodyMesh);
-    playerObj.meshIndices.push_back(CreateMesh("cybertruck_tires.obj", "vert_tire.glsl", "frag_tire.glsl"));
-    playerObj.meshIndices.push_back(CreateMesh("cybertruck_windows.obj", "vert_window.glsl", "frag_window.glsl"));
     
     playerObj.transform.position = vec3(0, 0, 0);
     
@@ -707,7 +697,7 @@ void InitGround(){
     groundTransform.rotation = rotate(groundTransform.rotation, radians(90.0f), vec3(1.0f, 0.0f, 0.0f));
     groundTransform.scale = vec3(1000.0f, 1000.0f, 1000.0f);
     
-    groundShaderId = CreateShaderProgram(GetPath("vert_ground.glsl").data(), GetPath("frag_ground.glsl").data());
+    groundShaderId = CreateShaderProgram(GetPath("shaders/vert_ground.glsl").data(), GetPath("shaders/frag_ground.glsl").data());
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -799,7 +789,7 @@ void InitScene(){
     armadillo.name = "Armadillo";
     armadillo.transform.position = vec3(15.0f, 0.0f, 15.0f);
     armadillo.transform.scale = vec3(5, 5, 5);
-    armadillo.meshIndices.push_back(CreateMesh("armadillo.obj", "vert_statue.glsl", "frag_statue.glsl"));
+    armadillo.meshIndices.push_back(CreateMesh("armadillo.obj", "shaders/vert.glsl", "shaders/frag.glsl"));
     auto programId = GetMesh(armadillo.meshIndices[0]).shader.programId;
     glUseProgram(programId);
     float color[] = {0.8f, 0.0f, 0.0f};
@@ -811,7 +801,7 @@ void InitScene(){
     bunny.name = "Bunny";
     bunny.transform.position = vec3(-15, 0.0f, -15.0f);
     bunny.transform.scale = vec3(10, 10, 10);
-    bunny.meshIndices.push_back(CreateMesh("bunny.obj", "vert_statue.glsl", "frag_statue.glsl"));
+    bunny.meshIndices.push_back(CreateMesh("bunny.obj", "shaders/vert.glsl", "shaders/frag.glsl"));
     programId = GetMesh(bunny.meshIndices[0]).shader.programId;
     glUseProgram(programId);
     float color1[] = {0.8f, 0.8f, 0.0f};
@@ -822,7 +812,7 @@ void InitScene(){
     teapot.name = "Teapot";
     teapot.transform.position = vec3(-15, 0.0f, 15.0f);
     teapot.transform.scale = vec3(5, 5, 5);
-    teapot.meshIndices.push_back(CreateMesh("teapot.obj", "vert_statue.glsl", "frag_statue.glsl"));
+    teapot.meshIndices.push_back(CreateMesh("teapot.obj", "shaders/vert.glsl", "shaders/frag.glsl"));
     programId = GetMesh(teapot.meshIndices[0]).shader.programId;
     glUseProgram(programId);
     float color2[] = {0.0f, 0.8f, 0.8f};
@@ -842,7 +832,7 @@ void InitScene(){
             cube.name = "Cube " + to_string(idx);
             cube.transform.position = vec3(x * separation, scaleY, z * separation);
             cube.transform.scale = vec3(scaleXZ, scaleY, scaleXZ);
-            cube.meshIndices.push_back(CreateMesh("cube.obj", "vert_statue.glsl", "frag_statue.glsl"));
+            cube.meshIndices.push_back(CreateMesh("cube.obj", "shaders/vert.glsl", "shaders/frag.glsl"));
         
             scene.objects.push_back(cube);
             
