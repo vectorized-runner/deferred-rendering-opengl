@@ -132,7 +132,6 @@ struct Mesh {
     GLuint gIndexBuffer;
     int gVertexDataSizeInBytes;
     int gNormalDataSizeInBytes;
-    int shaderId;
     int vbo;
     int vao;
     Shader shader;
