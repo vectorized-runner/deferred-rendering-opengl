@@ -853,6 +853,22 @@ void InitScene(){
     InitLights();
 }
 
+Object& GetPlayerObj(){
+    return scene.objects[player.objIndex];
+}
+
+void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+
+        auto playerPos = GetPlayerObj().transform.position;
+        auto upOffset = vec3(0, 2.5f, 0);
+        auto lightPos = playerPos + upOffset;
+        CreateLight(lightPos);
+        
+        cout << "light created" << endl;
+    }
+}
+
 void InitProgram(GLFWwindow* window){
     glEnable(GL_DEPTH_TEST);
     
@@ -864,6 +880,7 @@ void InitProgram(GLFWwindow* window){
     // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+    glfwSetMouseButtonCallback(window, MouseButtonCallback);
 }
 
 void ClearScreen(){
@@ -921,10 +938,6 @@ vec3 ClampLength(vec3 vector, float clampLength){
 
 bool IsLengthEqual(vec3 v, float l){
     return abs(length(v) - l) < 0.001f;
-}
-
-Object& GetPlayerObj(){
-    return scene.objects[player.objIndex];
 }
 
 
