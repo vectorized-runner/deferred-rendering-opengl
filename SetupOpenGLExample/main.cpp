@@ -764,6 +764,19 @@ void InitGround(){
     glUniform1i(glGetUniformLocation(groundShaderId, "ourTexture"), 0);
 }
 
+void CreateLight(vec3 pos){
+    if(scene.lightCount >= scene.maxLightCount)
+    {
+        cout << "max lights reached." << endl;
+        return;
+    }
+    
+    auto idx = scene.lightCount++;
+    auto intensity = RandomVec3(0.25f, 2.5f);
+    scene.lightPos[idx] = pos;
+    scene.lightIntensity[idx] = intensity;
+}
+
 void InitLights(){
     int lightCount = 50;
     float posMin = -25.0f;
