@@ -764,6 +764,22 @@ void InitGround(){
     glUniform1i(glGetUniformLocation(groundShaderId, "ourTexture"), 0);
 }
 
+void UpdateLightData(){
+    auto lightCount = scene.lightCount;
+    auto meshCount = scene.meshes.size();
+    
+    for(int i = 0; i < meshCount; i++){
+        auto& mesh = scene.meshes[i];
+        auto shaderId = mesh.shaderId;
+    
+        glUseProgram(shaderId);
+        glUniform3fv(glGetUniformLocation(shaderId, "lightPositions"), lightCount, glm::value_ptr(scene.lightPos[0]));
+        assert(glGetError() != GL_NO_ERROR);
+        glUniform3fv(glGetUniformLocation(shaderId, "lightIntensity"), lightCount, glm::value_ptr(scene.lightIntensity[0]));
+        assert(glGetError() != GL_NO_ERROR);
+    }
+}
+
 void CreateLight(vec3 pos){
     if(scene.lightCount >= scene.maxLightCount)
     {
@@ -775,6 +791,8 @@ void CreateLight(vec3 pos){
     auto intensity = RandomVec3(0.25f, 2.5f);
     scene.lightPos[idx] = pos;
     scene.lightIntensity[idx] = intensity;
+    
+    UpdateLightData();
 }
 
 void InitLights(){
