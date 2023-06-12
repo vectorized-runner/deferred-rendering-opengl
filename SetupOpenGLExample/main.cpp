@@ -777,8 +777,6 @@ void InitLights(){
         auto idx = scene.lightCount++;
         scene.lightPos[idx] = randomPos;
         scene.lightIntensity[idx] = randomIntensity;
-        
-        scene.lights[scene.lightCount++] = light;
         // TODO: Push lights to Shader!
     }
 }
