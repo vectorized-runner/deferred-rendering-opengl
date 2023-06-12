@@ -954,9 +954,7 @@ void UpdatePlayer(){
     auto right = vec3(1, 0, 0);
     float rotateAnglesX = rotateMultiplier * input.mouseDeltaY;
     auto rotateX = angleAxis(radians(rotateAnglesX), right);
-    
-    auto euler = degrees(eulerAngles(tf.rotation));
-    
+        
     tf.rotation = tf.rotation * rotateX * rotateZ;
     
     // TODO: Player model should have constant rotation relative to the Camera, achieve that.
