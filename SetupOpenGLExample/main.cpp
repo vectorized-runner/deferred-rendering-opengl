@@ -868,7 +868,7 @@ void InitScene(){
         }
     }
     
-    InitLights();
+    // InitLights();
 }
 
 Object& GetPlayerObj(){
