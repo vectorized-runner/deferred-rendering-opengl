@@ -63,11 +63,6 @@ struct Time {
     float deltaTime;
 };
 
-struct Light {
-    vec3 position;
-    vec3 intensity;
-};
-
 struct Transform{
     vec3 position = vec3(0, 0, 0);
     quat rotation = quat(1, 0, 0, 0);
@@ -169,7 +164,11 @@ struct Input {
 struct Scene {
     vector<Object> objects;
     vector<Mesh> meshes;
-    vector<Light> lights;
+    
+    static constexpr int maxLightCount = 100;
+    vec3 lightPos[maxLightCount];
+    vec3 lightIntensity[maxLightCount];
+    int lightCount;
 };
 
 Scene scene;
@@ -769,17 +768,17 @@ void InitLights(){
     int lightCount = 50;
     float posMin = -25.0f;
     float posMax = 25.0f;
-    float intensityMin = 0.5f;
-    float intensityMax = 5.0f;
+    float intensityMin = 0.25f;
+    float intensityMax = 2.0f;
     
     for(int i = 0; i < lightCount; i++){
         auto randomPos = RandomVec3(posMin, posMax);
         auto randomIntensity = RandomVec3(intensityMin, intensityMax);
-        auto light = Light();
-        light.position = randomPos;
-        light.intensity = randomIntensity;
-        scene.lights.push_back(light);
+        auto idx = scene.lightCount++;
+        scene.lightPos[idx] = randomPos;
+        scene.lightIntensity[idx] = randomIntensity;
         
+        scene.lights[scene.lightCount++] = light;
         // TODO: Push lights to Shader!
     }
 }
