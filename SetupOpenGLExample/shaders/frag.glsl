@@ -13,7 +13,7 @@ vec3 ka = vec3(0.3, 0.3, 0.3);   // ambient reflectance coefficient
 vec3 ks = vec3(0.8, 0.8, 0.8);   // specular reflectance coefficient
 vec3 lightPos = vec3(5, 5, 5);   // light position in world coordinates
 
-uniform vec3 eyePos;
+uniform vec3 cameraPos;
 
 in vec4 fragWorldPos;
 in vec3 fragWorldNor;
@@ -27,7 +27,7 @@ void main(void)
     // coordinates by the rasterizer.
 
     vec3 L = normalize(lightPos - vec3(fragWorldPos));
-    vec3 V = normalize(eyePos - vec3(fragWorldPos));
+    vec3 V = normalize(cameraPos - vec3(fragWorldPos));
     vec3 H = normalize(L + V);
     vec3 N = normalize(fragWorldNor);
 
