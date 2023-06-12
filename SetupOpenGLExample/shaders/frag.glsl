@@ -1,10 +1,5 @@
 #version 410 core
 
-const int maxLightCount = 100;
-uniform vec3 lightPositions[maxLightCount];
-uniform vec3 lightIntensities[maxLightCount];
-uniform int lightCount;
-
 // All of the following variables could be defined in the OpenGL
 // program and passed to this shader as uniform variables. This
 // would be necessary if their values could change during runtim.
@@ -16,7 +11,12 @@ vec3 kd = vec3(1, 0.2, 0.2);     // diffuse reflectance coefficient
 vec3 ka = vec3(0.3, 0.3, 0.3);   // ambient reflectance coefficient
 vec3 ks = vec3(0.8, 0.8, 0.8);   // specular reflectance coefficient
 
+const int maxLightCount = 100;
+
+uniform vec3 lightPositions[maxLightCount];
+uniform vec3 lightIntensities[maxLightCount];
 uniform vec3 cameraPos;
+uniform int lightCount;
 
 in vec4 fragWorldPos;
 in vec3 fragWorldNor;
