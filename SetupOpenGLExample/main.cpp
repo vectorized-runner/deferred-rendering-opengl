@@ -886,9 +886,9 @@ void DrawMesh(const mat4& projectionMatrix, const mat4& viewingMatrix, const mat
     
     glBindVertexArray(mesh.vao);
 
-    glUniformMatrix4fv(glGetUniformLocation(shaderId, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-    glUniformMatrix4fv(glGetUniformLocation(shaderId, "view"), 1, GL_FALSE, glm::value_ptr(viewingMatrix));
-    glUniformMatrix4fv(glGetUniformLocation(shaderId, "model"), 1, GL_FALSE, glm::value_ptr(modelingMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(shaderId, "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(shaderId, "viewingMatrix"), 1, GL_FALSE, glm::value_ptr(viewingMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(shaderId, "modelingMatrix"), 1, GL_FALSE, glm::value_ptr(modelingMatrix));
     glUniform3fv(glGetUniformLocation(shaderId, "cameraPos"), 1, glm::value_ptr(camera.position));
     
     glBindBuffer(GL_ARRAY_BUFFER, mesh.gVertexAttribBuffer);
