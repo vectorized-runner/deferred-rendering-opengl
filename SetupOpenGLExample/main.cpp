@@ -173,6 +173,22 @@ Time gameTime;
 int wireframeMode = 0;
 int renderMode = 0;
 bool firstFrame = true;
+random_device rd;
+mt19937 gen(rd());
+
+
+float RandomFloat(float minValue, float maxValue) {
+    std::uniform_real_distribution<float> dist(minValue, maxValue);
+    return dist(gen);
+}
+
+float RandomFloat(){
+    return RandomFloat(0.0f, 1.0f);
+}
+
+vec3 RandomVec3(){
+    return vec3(RandomFloat(), RandomFloat(), RandomFloat());
+}
 
 int GetMeshIndex(const string& path){
     auto meshCount = scene.meshes.size();
