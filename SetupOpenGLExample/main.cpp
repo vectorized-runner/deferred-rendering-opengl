@@ -14,6 +14,7 @@
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include <random>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -60,6 +61,11 @@ struct Face
 struct Time {
     float time;
     float deltaTime;
+};
+
+struct Light {
+    vec3 position;
+    vec3 intensity;
 };
 
 struct Transform{
@@ -163,6 +169,7 @@ struct Input {
 struct Scene {
     vector<Object> objects;
     vector<Mesh> meshes;
+    vector<Light> lights;
 };
 
 Scene scene;
@@ -186,8 +193,8 @@ float RandomFloat(){
     return RandomFloat(0.0f, 1.0f);
 }
 
-vec3 RandomVec3(){
-    return vec3(RandomFloat(), RandomFloat(), RandomFloat());
+vec3 RandomVec3(float min, float max){
+    return vec3(RandomFloat(min, max), RandomFloat(min, max), RandomFloat(min, max));
 }
 
 int GetMeshIndex(const string& path){
@@ -768,6 +775,25 @@ void InitGround(){
     glUniform1i(glGetUniformLocation(groundShaderId, "ourTexture"), 0);
 }
 
+void InitLights(){
+    int lightCount = 50;
+    float posMin = -25.0f;
+    float posMax = 25.0f;
+    float intensityMin = 0.5f;
+    float intensityMax = 5.0f;
+    
+    for(int i = 0; i < lightCount; i++){
+        auto randomPos = RandomVec3(posMin, posMax);
+        auto randomIntensity = RandomVec3(intensityMin, intensityMax);
+        auto light = Light();
+        light.position = randomPos;
+        light.intensity = randomIntensity;
+        scene.lights.push_back(light);
+        
+        // TODO: Push lights to Shader!
+    }
+}
+
 void InitScene(){
     auto armadillo = Object();
     armadillo.name = "Armadillo";
@@ -823,6 +849,8 @@ void InitScene(){
             idx++;
         }
     }
+    
+    InitLights();
 }
 
 void InitProgram(GLFWwindow* window){
