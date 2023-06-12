@@ -764,6 +764,15 @@ void InitGround(){
     glUniform1i(glGetUniformLocation(groundShaderId, "ourTexture"), 0);
 }
 
+void CheckError(){
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR) {
+        // Handle the error, e.g., print an error message or perform error-specific actions
+        const char* errorMessage = reinterpret_cast<const char*>(gluErrorString(error));
+        printf("Error setting uniform int: %s\n", errorMessage);
+    }
+}
+
 void UpdateLightData(){
     auto lightCount = scene.lightCount;
     auto meshCount = scene.meshes.size();
