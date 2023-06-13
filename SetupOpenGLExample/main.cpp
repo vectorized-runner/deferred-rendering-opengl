@@ -820,6 +820,7 @@ void CreateLight(vec3 pos){
     auto lightObj = Object();
     lightObj.name = "Light";
     lightObj.transform.position = pos;
+    lightObj.transform.scale = vec3(0.1f);
     auto lightMesh = CreateMesh("sphere.obj", "shaders/vert_unlit.glsl", "shaders/frag_unlit.glsl");
     auto lightShader = GetMesh(lightMesh).shader.programId;
     glUseProgram(lightShader);
