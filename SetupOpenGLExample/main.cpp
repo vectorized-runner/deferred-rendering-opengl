@@ -809,6 +809,12 @@ void CreateLight(vec3 pos){
     scene.lightPos[idx] = pos;
     scene.lightIntensity[idx] = intensity;
     
+    auto lightObj = Object();
+    lightObj.transform.position = pos;
+    auto lightMesh = CreateMesh(GetPath("sphere.obj"), GetPath("shaders/vert_unlit.glsl"), GetPath("shaders/frag_unlit.glsl"));
+    lightObj.meshIndices.push_back(lightMesh);
+    scene.objects.push_back(lightObj);
+    
     UpdateLightData();
 }
 
