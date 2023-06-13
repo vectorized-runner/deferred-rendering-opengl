@@ -818,8 +818,16 @@ void CreateLight(vec3 pos){
     scene.lightIntensity[idx] = intensity;
     
     auto lightObj = Object();
+    lightObj.name = "Light";
     lightObj.transform.position = pos;
     auto lightMesh = CreateMesh("sphere.obj", "shaders/vert_unlit.glsl", "shaders/frag_unlit.glsl");
+    auto lightShader = GetMesh(lightMesh).shader.programId;
+    glUseProgram(lightShader);
+    auto unlitLoc = glGetUniformLocation(lightShader, "unlit");
+    assert(unlitLoc != -1);
+    glUniform3fv(unlitLoc, 1, glm::value_ptr(intensity));
+    CheckError();
+    
     lightObj.meshIndices.push_back(lightMesh);
     scene.objects.push_back(lightObj);
     
