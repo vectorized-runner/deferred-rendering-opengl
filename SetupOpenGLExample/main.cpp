@@ -776,24 +776,32 @@ void CheckError(){
 
 void UpdateLightData(){
     auto lightCount = scene.lightCount;
-    auto meshCount = scene.meshes.size();
+    auto objectCount = scene.objects.size();
     
-    for(int i = 0; i < meshCount; i++){
-
-        auto& mesh = scene.meshes[i];
-        auto shaderId = mesh.shader.programId;
-        glUseProgram(shaderId);
-    
-        auto lightPosLoc = glGetUniformLocation(shaderId, "lightPositions");
-        assert(lightPosLoc != -1);
-        glUniform3fv(lightPosLoc, lightCount, glm::value_ptr(scene.lightPos[0]));
-        CheckError();
-        auto lightIntensityLoc = glGetUniformLocation(shaderId, "lightIntensities");
-        glUniform3fv(lightIntensityLoc, lightCount, glm::value_ptr(scene.lightIntensity[0]));
-        CheckError();
-        auto lightCountLoc = glGetUniformLocation(shaderId, "lightCount");
-        glUniform1i(lightCountLoc, scene.lightCount);
-        CheckError();
+    for(int i = 0; i < objectCount; i++){
+        auto& obj = scene.objects[i];
+        if(obj.name == "Light"){
+            continue;
+        }
+        
+        auto meshCount = obj.meshIndices.size();
+        for(int j = 0; j < meshCount; j++){
+            auto& mesh = scene.meshes[obj.meshIndices[j]];
+        
+            auto shaderId = mesh.shader.programId;
+            glUseProgram(shaderId);
+        
+            auto lightPosLoc = glGetUniformLocation(shaderId, "lightPositions");
+            assert(lightPosLoc != -1);
+            glUniform3fv(lightPosLoc, lightCount, glm::value_ptr(scene.lightPos[0]));
+            CheckError();
+            auto lightIntensityLoc = glGetUniformLocation(shaderId, "lightIntensities");
+            glUniform3fv(lightIntensityLoc, lightCount, glm::value_ptr(scene.lightIntensity[0]));
+            CheckError();
+            auto lightCountLoc = glGetUniformLocation(shaderId, "lightCount");
+            glUniform1i(lightCountLoc, scene.lightCount);
+            CheckError();
+        }
     }
 }
 
