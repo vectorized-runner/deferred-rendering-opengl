@@ -181,6 +181,8 @@ bool firstFrame = true;
 random_device rd;
 mt19937 gen(rd());
 
+const float intensityMin = 5.0f;
+const float intensityMax = 100.0f;
 
 float RandomFloat(float minValue, float maxValue) {
     std::uniform_real_distribution<float> dist(minValue, maxValue);
@@ -803,7 +805,7 @@ void CreateLight(vec3 pos){
     }
     
     auto idx = scene.lightCount++;
-    auto intensity = RandomVec3(0.25f, 2.5f);
+    auto intensity = RandomVec3(intensityMin, intensityMax);
     scene.lightPos[idx] = pos;
     scene.lightIntensity[idx] = intensity;
     
@@ -814,8 +816,6 @@ void InitLights(){
     int lightCount = 50;
     float posMin = -25.0f;
     float posMax = 25.0f;
-    float intensityMin = 0.25f;
-    float intensityMax = 2.0f;
     
     for(int i = 0; i < lightCount; i++){
         auto randomPos = RandomVec3(posMin, posMax);
