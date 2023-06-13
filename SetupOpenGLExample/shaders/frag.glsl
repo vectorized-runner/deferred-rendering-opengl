@@ -23,6 +23,11 @@ in vec3 fragWorldNor;
 
 out vec4 fragColor;
 
+float distancesq(vec3 a, vec3 b){
+    vec3 diff = a - b;
+    return dot(diff, diff);
+}
+
 // Compute lighting. We assume lightPos and eyePos are in world
 // coordinates. fragWorldPos and fragWorldNor are the interpolated
 // coordinates by the rasterizer.
@@ -33,9 +38,11 @@ void main(void)
     
     for(int i = 0; i < lightCount; i++){
         vec3 lightPos = lightPositions[i];
-        vec3 I = lightIntensities[i];
-        vec3 L = normalize(lightPos - vec3(fragWorldPos));
-        vec3 V = normalize(cameraPos - vec3(fragWorldPos));
+        vec3 pos = vec3(fragWorldPos);
+        float dsq = distancesq(lightPos, pos);
+        vec3 I = lightIntensities[i] / dsq;
+        vec3 L = normalize(lightPos - pos);
+        vec3 V = normalize(cameraPos - pos);
         vec3 H = normalize(L + V);
         vec3 N = normalize(fragWorldNor);
 
