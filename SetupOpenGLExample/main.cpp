@@ -173,6 +173,10 @@ struct Scene {
     static constexpr int maxLightCount = 100;
     vec3 lightPos[maxLightCount];
     vec3 lightIntensity[maxLightCount];
+    vec3 ligthVelocity[maxLightCount];
+    int lightObjIndex[maxLightCount];
+    bool lightHitGround[maxLightCount];
+    
     int lightCount;
 };
 
@@ -891,7 +895,10 @@ void CreateLight(vec3 pos){
     CheckError();
     
     lightObj.meshIndices.push_back(lightMesh);
+    auto objIndex = scene.objects.size();
     scene.objects.push_back(lightObj);
+    
+    scene.lightObjIndex[idx] = objIndex;
     
     UpdateLightData();
 }
@@ -1151,10 +1158,32 @@ void UpdateTime() {
     gameTime.time = newTime;
 }
 
+void UpdateLights(){
+    auto acceleration = vec3(0, -10, 0);
+    auto dt = gameTime.deltaTime;
+    auto minHeight = 0.0f;
+    
+    for(int i = 0; i < scene.lightCount; i++){
+        auto& velocity = scene.ligthVelocity[i];
+        velocity += acceleration * dt;
+        auto& pos = scene.lightPos[i];
+        pos += velocity * dt;
+    
+        if(pos.y <= minHeight){
+            pos.y = minHeight;
+        }
+        
+        scene.objects[scene.lightObjIndex[i]].transform.position = pos;
+    }
+    
+    UpdateLightData();
+}
+
 void RunSimulation(){
     UpdateTime();
     UpdatePlayer();
     UpdateEnemies();
+    UpdateLights();
     UpdateCamera();
     firstFrame = false;
 }
