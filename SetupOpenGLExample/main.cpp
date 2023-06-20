@@ -154,7 +154,7 @@ struct Player {
 
     int objIndex;
     
-    static constexpr float MoveSpeed = 20.0f;
+    static constexpr float MoveSpeed = 40.0f;
 };
 
 struct Input {
@@ -190,7 +190,7 @@ mt19937 gen(rd());
 
 const float intensityMin = 5.0f;
 const float intensityMax = 100.0f;
-const float enemySpeed = 10.0f;
+const float enemySpeed = 5.0f;
 const int enemyCount = 20;
 
 float RandomFloat(float minValue, float maxValue) {
@@ -198,9 +198,9 @@ float RandomFloat(float minValue, float maxValue) {
     return dist(gen);
 }
 
-vec3 RandomPointInCircle(vec3 center, float radiusMax){
-    auto r = RandomFloat(0.0f, radiusMax);
-    auto angle = RandomFloat(0.0f, 360.0f);
+vec3 RandomPointInCircle(vec3 center, float radiusMin, float radiusMax){
+    auto r = RandomFloat(radiusMin, radiusMax);
+    auto angle = RandomFloat(-360.0f, 360.0f);
     auto rad = radians(angle);
     auto dir = normalize(vec3(cos(rad), 0.0f, sin(rad)));
     
@@ -692,8 +692,13 @@ Object& GetPlayerObj(){
     return scene.objects[player.objIndex];
 }
 
+Object& GetEnemyObj(int index){
+    return scene.objects[index];
+}
+
 void InitEnemies() {
-    const float spawnRadius = 30.0f;
+    const float spawnRadiusMin = 100.0f;
+    const float spawnRadiusMax = 300.0f;
     
     for(int i = 0; i < enemyCount; i++){
         auto enemy = Enemy();
@@ -701,15 +706,20 @@ void InitEnemies() {
         auto obj = Object();
         obj.name = "Enemy";
         auto playerPos = GetPlayerObj().transform.position;
-        auto enemyPos = RandomPointInCircle(playerPos, spawnRadius);
-        obj.transform.position = enemyPos;
+        auto enemyPos = RandomPointInCircle(playerPos, spawnRadiusMin, spawnRadiusMax);
         
-        auto objIndex = scene.objects.size();
-        scene.objects.push_back(obj);
+        auto dist = distance(playerPos, enemyPos);
+        
+        cout << "Dist is: " << to_string(dist) << endl;
+        
+        obj.transform.position = enemyPos;
+        obj.transform.scale = vec3(2.5f, 2.5f, 2.5f);
         
         auto mesh = CreateMesh("armadillo.obj", "shaders/vert.glsl", "shaders/frag.glsl");
         obj.meshIndices.push_back(mesh);
         
+        auto objIndex = scene.objects.size();
+        scene.objects.push_back(obj);
         enemy.objIndex = objIndex;
         
         enemies.push_back(enemy);
@@ -1073,6 +1083,30 @@ vec3 GetPlayerMoveVector(){
     return normalize(ProjectOnPlane(sum, vec3(0, 1, 0)));
 }
 
+void UpdateEnemies(){
+    auto playerPos = GetPlayerObj().transform.position;
+    
+    for(int i = 0; i < enemyCount; i++){
+        auto& enemy = enemies[i];
+        auto& obj = GetEnemyObj(enemy.objIndex);
+        auto pos = obj.transform.position;
+        auto stoppingDistance = 2.0f;
+        auto distance = glm::distance(pos, playerPos);
+        
+        if (distance <= stoppingDistance){
+            continue;
+        }
+        
+        auto dirToPlayer = normalize(playerPos - pos);
+        auto moveAmount = dirToPlayer * enemySpeed * gameTime.deltaTime;
+        auto newPos = pos + moveAmount;
+        
+        obj.transform.position = newPos;
+        
+        // cout << "NewPosForEnemy" << to_string(newPos) << "pPos" << to_string(playerPos) << endl;
+    }
+}
+
 void UpdatePlayer(){
     
     auto vec = GetPlayerMoveVector();
@@ -1115,6 +1149,7 @@ void UpdateTime() {
 void RunSimulation(){
     UpdateTime();
     UpdatePlayer();
+    UpdateEnemies();
     UpdateCamera();
     firstFrame = false;
 }
