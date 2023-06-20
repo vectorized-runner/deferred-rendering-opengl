@@ -143,6 +143,12 @@ struct Object {
     vector<int> meshIndices;
 };
 
+struct Enemy {
+    float speed = 0.0f;
+    
+    int objIndex;
+};
+
 struct Player {
     float speed = 0.0f;
 
@@ -170,6 +176,7 @@ struct Scene {
     int lightCount;
 };
 
+vector<Enemy> enemies;
 Scene scene;
 Player player;
 Camera camera;
@@ -183,10 +190,21 @@ mt19937 gen(rd());
 
 const float intensityMin = 5.0f;
 const float intensityMax = 100.0f;
+const float enemySpeed = 10.0f;
+const int enemyCount = 20;
 
 float RandomFloat(float minValue, float maxValue) {
     std::uniform_real_distribution<float> dist(minValue, maxValue);
     return dist(gen);
+}
+
+vec3 RandomPointInCircle(vec3 center, float radiusMax){
+    auto r = RandomFloat(0.0f, radiusMax);
+    auto angle = RandomFloat(0.0f, 360.0f);
+    auto rad = radians(angle);
+    auto dir = normalize(vec3(cos(rad), 0.0f, sin(rad)));
+    
+    return center + r * dir;
 }
 
 float RandomFloat(){
@@ -669,6 +687,38 @@ int CreateMesh(const string& objPath, const string& vertexPath, const string& fr
     return idx;
 }
 
+
+Object& GetPlayerObj(){
+    return scene.objects[player.objIndex];
+}
+
+void InitEnemies() {
+    const float spawnRadius = 30.0f;
+    
+    for(int i = 0; i < enemyCount; i++){
+        auto enemy = Enemy();
+        
+        auto obj = Object();
+        obj.name = "Enemy";
+        auto playerPos = GetPlayerObj().transform.position;
+        auto enemyPos = RandomPointInCircle(playerPos, spawnRadius);
+        obj.transform.position = enemyPos;
+        
+        auto objIndex = scene.objects.size();
+        scene.objects.push_back(obj);
+        
+        auto mesh = CreateMesh("armadillo.obj", "shaders/vert.glsl", "shaders/frag.glsl");
+        obj.meshIndices.push_back(mesh);
+        
+        enemy.objIndex = objIndex;
+        
+        enemies.push_back(enemy);
+    }
+    
+    cout << "Enemies created." << endl;
+}
+
+
 void InitPlayer(){
     auto playerObj = Object();
     playerObj.name = "Player";
@@ -909,9 +959,6 @@ void InitScene(){
     // InitLights();
 }
 
-Object& GetPlayerObj(){
-    return scene.objects[player.objIndex];
-}
 
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
@@ -931,6 +978,7 @@ void InitProgram(GLFWwindow* window){
     InitPlayer();
     InitGround();
     InitScene();
+    InitEnemies();
     
     // Hide the cursor
     // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
