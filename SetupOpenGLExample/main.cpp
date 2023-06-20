@@ -1166,7 +1166,7 @@ void UpdateTime() {
 void UpdateLights(){
     auto acceleration = vec3(0, -10, 0);
     auto dt = gameTime.deltaTime;
-    auto minHeight = 0.5f;
+    auto minHeight = 1.0f;
     
     for(int i = 0; i < scene.lightCount; i++){
         
