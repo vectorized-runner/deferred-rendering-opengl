@@ -900,7 +900,7 @@ void InitLights(){
     }
 }
 
-void InitScene(){
+void AddRandomObjs(){
     auto armadillo = Object();
     armadillo.name = "Armadillo";
     armadillo.transform.position = vec3(15.0f, 0.0f, 15.0f);
@@ -934,6 +934,11 @@ void InitScene(){
     float color2[] = {0.0f, 0.8f, 0.8f};
     glUniform3fv(colorLoc, 1, color2);
     scene.objects.push_back(teapot);
+}
+
+void InitScene(){
+
+    // AddRandomObjs();
     
     int cubeCountX = 100;
     int cubeCountZ = 100;
