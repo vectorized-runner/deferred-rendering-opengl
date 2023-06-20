@@ -699,6 +699,7 @@ Object& GetEnemyObj(int index){
 void InitEnemies() {
     const float spawnRadiusMin = 100.0f;
     const float spawnRadiusMax = 300.0f;
+    const float enemyScale = 3.0f;
     
     for(int i = 0; i < enemyCount; i++){
         auto enemy = Enemy();
@@ -712,8 +713,8 @@ void InitEnemies() {
         
         cout << "Dist is: " << to_string(dist) << endl;
         
-        obj.transform.position = enemyPos;
-        obj.transform.scale = vec3(2.5f, 2.5f, 2.5f);
+        obj.transform.position = enemyPos + vec3(0, enemyScale, 0);
+        obj.transform.scale = vec3(enemyScale);
         
         auto mesh = CreateMesh("armadillo.obj", "shaders/vert.glsl", "shaders/frag.glsl");
         obj.meshIndices.push_back(mesh);
@@ -1101,7 +1102,11 @@ void UpdateEnemies(){
         auto moveAmount = dirToPlayer * enemySpeed * gameTime.deltaTime;
         auto newPos = pos + moveAmount;
         
+        // move towards player
         obj.transform.position = newPos;
+        
+        // look at player
+        obj.transform.rotation = quatLookAt(dirToPlayer, vec3(0, 1, 0));
         
         // cout << "NewPosForEnemy" << to_string(newPos) << "pPos" << to_string(playerPos) << endl;
     }
