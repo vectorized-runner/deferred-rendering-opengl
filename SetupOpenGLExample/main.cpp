@@ -987,11 +987,12 @@ void InitScene(){
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
 
-        auto playerPos = GetPlayerObj().transform.position;
+        auto tf = GetPlayerObj().transform;
+        auto playerPos = tf.position;
         auto upOffset = vec3(0, 5.0f, 0);
         auto lightPos = playerPos + upOffset;
         
-        auto lightVelocity = vec3(0);
+        auto lightVelocity = tf.Forward() * 25.0f;
         
         CreateLight(lightPos, lightVelocity);
         
