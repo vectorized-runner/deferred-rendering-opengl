@@ -164,6 +164,7 @@ struct Input {
     double mouseY;
     double mouseDeltaX;
     double mouseDeltaY;
+    int jump;
 };
 
 struct Scene {
@@ -549,6 +550,9 @@ void OnKeyAction(GLFWwindow* window, int key, int scancode, int action, int mods
         }
     }
     else if(key == GLFW_KEY_SPACE){
+        // TODO: Jump
+    }
+    else if(key == GLFW_KEY_F){
         if(isPress){
             renderMode = !renderMode;
         }
