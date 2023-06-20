@@ -876,7 +876,7 @@ void CreateLight(vec3 pos, vec3 vel){
         cout << "max lights reached." << endl;
         return;
     }
-    
+        
     auto idx = scene.lightCount++;
     auto intensity = RandomVec3(intensityMin, intensityMax);
     scene.lightPos[idx] = pos;
@@ -1168,16 +1168,35 @@ void UpdateLights(){
     auto minHeight = 0.5f;
     
     for(int i = 0; i < scene.lightCount; i++){
-        auto& velocity = scene.ligthVelocity[i];
-        velocity += acceleration * dt;
-        auto& pos = scene.lightPos[i];
-        pos += velocity * dt;
-    
-        if(pos.y <= minHeight){
-            pos.y = minHeight;
-        }
         
-        scene.objects[scene.lightObjIndex[i]].transform.position = pos;
+        if(scene.lightHitGround[i]){
+            // Just add friction
+            auto& velocity = scene.ligthVelocity[i];
+            velocity.y = 0.0f;
+            
+            if(length(velocity) > 0.01f){
+                // Stop in one second
+                velocity = normalize(velocity) * length(velocity) * (1.0f - gameTime.deltaTime);
+            }
+            
+            auto& pos = scene.lightPos[i];
+            pos += velocity * dt;
+            
+            scene.objects[scene.lightObjIndex[i]].transform.position = pos;
+        }
+        else{
+            auto& velocity = scene.ligthVelocity[i];
+            velocity += acceleration * dt;
+            auto& pos = scene.lightPos[i];
+            pos += velocity * dt;
+        
+            if(pos.y <= minHeight){
+                pos.y = minHeight;
+                scene.lightHitGround[i] = true;
+            }
+            
+            scene.objects[scene.lightObjIndex[i]].transform.position = pos;
+        }
     }
     
     UpdateLightData();
