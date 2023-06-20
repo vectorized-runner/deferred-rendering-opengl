@@ -870,7 +870,7 @@ void UpdateLightData(){
     }
 }
 
-void CreateLight(vec3 pos){
+void CreateLight(vec3 pos, vec3 vel){
     if(scene.lightCount >= scene.maxLightCount)
     {
         cout << "max lights reached." << endl;
@@ -881,6 +881,7 @@ void CreateLight(vec3 pos){
     auto intensity = RandomVec3(intensityMin, intensityMax);
     scene.lightPos[idx] = pos;
     scene.lightIntensity[idx] = intensity;
+    scene.ligthVelocity[idx] = vel;
     
     auto lightObj = Object();
     lightObj.name = "Light";
@@ -987,9 +988,12 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
 
         auto playerPos = GetPlayerObj().transform.position;
-        auto upOffset = vec3(0, 2.5f, 0);
+        auto upOffset = vec3(0, 5.0f, 0);
         auto lightPos = playerPos + upOffset;
-        CreateLight(lightPos);
+        
+        auto lightVelocity = vec3(0);
+        
+        CreateLight(lightPos, lightVelocity);
         
         cout << "light created" << endl;
     }
@@ -1161,7 +1165,7 @@ void UpdateTime() {
 void UpdateLights(){
     auto acceleration = vec3(0, -10, 0);
     auto dt = gameTime.deltaTime;
-    auto minHeight = 0.0f;
+    auto minHeight = 0.5f;
     
     for(int i = 0; i < scene.lightCount; i++){
         auto& velocity = scene.ligthVelocity[i];
