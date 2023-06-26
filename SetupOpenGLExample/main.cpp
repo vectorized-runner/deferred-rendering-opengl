@@ -1048,9 +1048,9 @@ void DrawMesh(const mat4& projectionMatrix, const mat4& viewingMatrix, const mat
     glUniform3fv(glGetUniformLocation(shaderId, "cameraPos"), 1, glm::value_ptr(camera.position));
     CheckError();
     
+    // Not sure if these are required after we're doing vao already, a question for later.
     glBindBuffer(GL_ARRAY_BUFFER, mesh.gVertexAttribBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.gIndexBuffer);
-    
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(mesh.gVertexDataSizeInBytes));
     
