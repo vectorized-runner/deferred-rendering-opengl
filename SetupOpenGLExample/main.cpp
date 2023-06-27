@@ -194,6 +194,7 @@ int renderDeferred = 0;
 bool firstFrame = true;
 random_device rd;
 mt19937 gen(rd());
+bool simulationPaused = false;
 
 Shader deferredLightShader;
 Shader deferredGeometryShader;
@@ -643,6 +644,11 @@ void OnKeyAction(GLFWwindow* window, int key, int scancode, int action, int mods
             else{
                 InitForwardRendering();
             }
+        }
+    }
+    else if(key == GLFW_KEY_P){
+        if(isPress){
+            simulationPaused = !simulationPaused;
         }
     }
 }
@@ -1487,7 +1493,11 @@ void ProgramLoop(GLFWwindow* window){
     while (!glfwWindowShouldClose(window))
     {
         UpdateInput(window);
-        RunSimulation();
+        
+        if(!simulationPaused){
+            RunSimulation();
+        }
+        
         Render(window);
     }
 }
