@@ -1346,7 +1346,8 @@ void DrawSceneForward(){
         DrawObject(projectionMatrix, viewingMatrix, obj, renderDeferred, i);
     }
     
-    DrawGround(projectionMatrix, viewingMatrix);
+    // Drawing ground doesn't work.
+    // DrawGround(projectionMatrix, viewingMatrix);
 }
 
 unsigned int quadVAO = 0;
