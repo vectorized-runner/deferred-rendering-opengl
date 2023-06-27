@@ -804,12 +804,7 @@ void InitEnemies() {
         obj.transform.position = enemyPos + vec3(0, enemyScale, 0);
         obj.transform.scale = vec3(enemyScale);
         
-
-        
-        
-        // TODO: Defered
-        
-        auto mesh = CreateMesh("armadillo.obj", forwardShader, forwardShader);
+        auto mesh = CreateMesh("armadillo.obj", objShaderForward, objShaderDeferred);
         obj.meshIndices.push_back(mesh);
         
         auto objIndex = scene.objects.size();
