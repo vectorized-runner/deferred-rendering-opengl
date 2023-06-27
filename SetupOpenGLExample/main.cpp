@@ -978,13 +978,6 @@ void CreateLight(vec3 pos, vec3 vel){
     lightObj.transform.position = pos;
     lightObj.transform.scale = vec3(0.1f);
     auto lightMesh = CreateMesh("sphere.obj", lightMeshShader, lightMeshShader);
-    auto lightShader = GetRenderShader(GetMesh(lightMesh));
-    glUseProgram(lightShader);
-    auto unlitLoc = glGetUniformLocation(lightShader, "unlit");
-    assert(unlitLoc != -1);
-    glUniform3fv(unlitLoc, 1, glm::value_ptr(intensity));
-    CheckError();
-    
     lightObj.meshIndices.push_back(lightMesh);
     auto objIndex = scene.lightObjects.size();
     scene.lightObjects.push_back(lightObj);
@@ -1132,7 +1125,7 @@ void InitProgram(GLFWwindow* window){
 }
 
 
-void DrawMesh(const mat4& projectionMatrix, const mat4& viewingMatrix, const mat4& modelingMatrix, const Mesh& mesh, const Shader& shader){
+void DrawMesh(const mat4& projectionMatrix, const mat4& viewingMatrix, const mat4& modelingMatrix, const Mesh& mesh, const Shader& shader, int lightIndex){
     if(wireframeMode){
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
@@ -1142,6 +1135,14 @@ void DrawMesh(const mat4& projectionMatrix, const mat4& viewingMatrix, const mat
     
     auto shaderId = shader.programId;
     glUseProgram(shaderId);
+    
+    if(lightIndex != -1){
+        auto unlitLoc = glGetUniformLocation(shaderId, "unlit");
+        assert(unlitLoc != -1);
+        auto norm_intensity = normalize(scene.lightIntensity[lightIndex]);
+        glUniform3fv(unlitLoc, 1, glm::value_ptr(norm_intensity));
+        CheckError();
+    }
     
     glBindVertexArray(mesh.vao);
 
@@ -1163,13 +1164,13 @@ void DrawMesh(const mat4& projectionMatrix, const mat4& viewingMatrix, const mat
     glDrawElements(GL_TRIANGLES, mesh.faces.size() * 3, GL_UNSIGNED_INT, 0);
 }
 
-void DrawObject(const mat4& projectionMatrix, const mat4& viewingMatrix, const Object& obj, bool deferred) {
+void DrawObject(const mat4& projectionMatrix, const mat4& viewingMatrix, const Object& obj, bool deferred, int lightIndex) {
     const auto modelingMatrix = obj.transform.GetMatrix();
     
     for(int i = 0; i < obj.meshIndices.size(); i++){
         auto& mesh = GetMesh(obj.meshIndices[i]);
         auto shader = deferred ? mesh.deferredShader : mesh.forwardShader;
-        DrawMesh(projectionMatrix, viewingMatrix, modelingMatrix, mesh, shader);
+        DrawMesh(projectionMatrix, viewingMatrix, modelingMatrix, mesh, shader, lightIndex);
     }
 }
 
@@ -1366,12 +1367,12 @@ void DrawSceneForward(){
         if(obj.name == "Player")
             continue;
         
-        DrawObject(projectionMatrix, viewingMatrix, obj, renderDeferred);
+        DrawObject(projectionMatrix, viewingMatrix, obj, renderDeferred, -1);
     }
     
     for(int i = 0; i < scene.lightObjects.size(); i++){
         const auto& obj = scene.lightObjects[i];
-        DrawObject(projectionMatrix, viewingMatrix, obj, renderDeferred);
+        DrawObject(projectionMatrix, viewingMatrix, obj, renderDeferred, i);
     }
     
     DrawGround(projectionMatrix, viewingMatrix);
@@ -1425,7 +1426,7 @@ void DrawSceneDeferred(){
         if(obj.name == "Player")
             continue;
         
-        DrawObject(projectionMatrix, viewingMatrix, obj, renderDeferred);
+        DrawObject(projectionMatrix, viewingMatrix, obj, renderDeferred, -1);
     }
         
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -1467,7 +1468,7 @@ void DrawSceneDeferred(){
     for(int i = 0; i < scene.lightObjects.size(); i++){
         const auto& obj = scene.lightObjects[i];
         
-        DrawObject(projectionMatrix, viewingMatrix, obj, renderDeferred);
+        DrawObject(projectionMatrix, viewingMatrix, obj, renderDeferred, i);
     }
   
     // This doesn't work.
