@@ -715,7 +715,7 @@ GLuint CreateFragmentShader(const char* name){
     return CreateShader(name, GL_FRAGMENT_SHADER);
 }
 
-int CreateShaderProgram(const char* vertexShaderName, const char* fragmentShaderName){
+Shader CreateShaderProgram(const char* vertexShaderName, const char* fragmentShaderName){
     auto shaderProgramId = glCreateProgram();
     DebugAssert(shaderProgramId != -1, "ShaderProgram Failed.");
     
@@ -741,7 +741,10 @@ int CreateShaderProgram(const char* vertexShaderName, const char* fragmentShader
     glDeleteShader(vertexShaderId);
     glDeleteShader(fragmentShaderId);
     
-    return shaderProgramId;
+    Shader shader;
+    shader.programId = shaderProgramId;
+    
+    return shader;
 }
 
 const Mesh& GetMesh(int index){
