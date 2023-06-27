@@ -959,6 +959,15 @@ void UpdateLightData(){
     }
 }
 
+int GetRenderShader(const Mesh& mesh){
+    if(renderMode == 0){
+        // Forward
+        return mesh.forwardShader.programId;
+    }
+    
+    return mesh.deferredShader.programId;
+}
+
 // TODO: Ensure light data uses the same naming/offsets in the Shaders.
 // TODO: Use different shader for lights (not the one used for forward/deferred rendering)
 void CreateLight(vec3 pos, vec3 vel){
@@ -980,7 +989,7 @@ void CreateLight(vec3 pos, vec3 vel){
     lightObj.transform.scale = vec3(0.1f);
     // TODO: Handle lights differently
     auto lightMesh = CreateMesh("sphere.obj", lightShaderForward, lightShaderForward);
-    auto lightShader = GetMesh(lightMesh).shader.programId;
+    auto lightShader = GetRenderShader(GetMesh(lightMesh));
     glUseProgram(lightShader);
     auto unlitLoc = glGetUniformLocation(lightShader, "unlit");
     assert(unlitLoc != -1);
@@ -1009,15 +1018,6 @@ void InitLights(){
         scene.lightIntensity[idx] = randomIntensity;
         // TODO: Push lights to Shader!
     }
-}
-
-int GetRenderShader(const Mesh& mesh){
-    if(renderMode == 0){
-        // Forward
-        return mesh.forwardShader.programId;
-    }
-    
-    return mesh.deferredShader.programId;
 }
 
 void AddRandomObjs(){
