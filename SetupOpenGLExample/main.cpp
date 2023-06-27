@@ -194,6 +194,9 @@ bool firstFrame = true;
 random_device rd;
 mt19937 gen(rd());
 
+Shader objShaderDeferred;
+Shader objShaderForward;
+
 const float intensityMin = 5.0f;
 const float intensityMax = 100.0f;
 const float enemySpeed = 5.0f;
@@ -800,9 +803,7 @@ void InitEnemies() {
         obj.transform.position = enemyPos + vec3(0, enemyScale, 0);
         obj.transform.scale = vec3(enemyScale);
         
-        auto forwardShader = CreateShaderProgram(
-                                                 GetPath("shaders/vert_forward.glsl").data(),
-                                                 GetPath("shaders/frag_forward.glsl").data());
+
         
         
         // TODO: Defered
@@ -1088,8 +1089,20 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
     }
 }
 
+void CreateShaders(){
+    objShaderForward = CreateShaderProgram(
+                                        GetPath("shaders/vert_forward.glsl").data(),
+                                        GetPath("shaders/frag_forward.glsl").data());
+    
+    objShaderDeferred = CreateShaderProgram(
+                                        GetPath("shaders/vert_deferred.glsl").data(),
+                                        GetPath("shaders/frag_deferred.glsl").data());
+}
+
 void InitProgram(GLFWwindow* window){
     glEnable(GL_DEPTH_TEST);
+    
+    CreateShaders();
     
     InitPlayer();
     InitGround();
