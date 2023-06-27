@@ -567,12 +567,6 @@ void InitDeferredRendering(){
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         std::cout << "Framebuffer not complete!" << std::endl;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-      
-    // TODO: Pass lighting info to the Shader.
-    
-    // TODO: Shader configuration.
-    
-    // TODO: Render passes.
 }
 
 void InitForwardRendering(){
@@ -960,7 +954,6 @@ int GetRenderShader(const Mesh& mesh){
     return mesh.deferredShader.programId;
 }
 
-// TODO: Ensure light data uses the same naming/offsets in the Shaders.
 // TODO: Use different shader for lights (not the one used for forward/deferred rendering)
 void CreateLight(vec3 pos, vec3 vel){
     if(scene.lightCount >= scene.maxLightCount)
@@ -1340,7 +1333,6 @@ void DrawGround(const mat4& projectionMatrix, const mat4& viewingMatrix){
     // glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, ourTexture);
     
-    // TODO: Make this matrix naming same in all Shaders
     glUniformMatrix4fv(glGetUniformLocation(forwardGroundShader.programId, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
     glUniformMatrix4fv(glGetUniformLocation(forwardGroundShader.programId, "view"), 1, GL_FALSE, glm::value_ptr(viewingMatrix));
     glUniformMatrix4fv(glGetUniformLocation(forwardGroundShader.programId, "model"), 1, GL_FALSE, glm::value_ptr(modelingMatrix));
@@ -1408,7 +1400,6 @@ void RenderQuad()
     glBindVertexArray(0);
 }
 
-// TODO: Actual implementation of each method in here.
 void DrawSceneDeferred(){
     
     // 1. geometry pass: render scene's geometry/color data into gbuffer
