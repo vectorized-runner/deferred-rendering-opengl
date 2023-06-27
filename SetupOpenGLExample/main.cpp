@@ -419,6 +419,15 @@ void AddWindowHints(){
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 }
 
+void printGLError()
+{
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR)
+    {
+        std::cout << "OpenGL Error: " << gluErrorString(error) << std::endl;
+    }
+}
+
 
 void InitVBO(Mesh& mesh){
     GLuint vao;
@@ -429,7 +438,7 @@ void InitVBO(Mesh& mesh){
     
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
-    assert(glGetError() == GL_NONE);
+    printGLError();
     
     glGenBuffers(1, &mesh.gVertexAttribBuffer);
     glGenBuffers(1, &mesh.gIndexBuffer);
