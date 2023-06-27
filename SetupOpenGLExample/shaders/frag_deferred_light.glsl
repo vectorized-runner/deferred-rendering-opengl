@@ -7,7 +7,7 @@ uniform sampler2D gPosition;
 uniform sampler2D gNormal;
 uniform sampler2D gAlbedoSpec;
 
-const int maxLightCount = 100;
+const int maxLightCount = 256;
 
 uniform vec3 lightPositions[maxLightCount];
 uniform vec3 lightIntensities[maxLightCount];

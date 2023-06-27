@@ -11,7 +11,7 @@ vec3 kd = vec3(0.2, 0.2, 0.2);     // diffuse reflectance coefficient
 vec3 ka = vec3(0.3, 0.3, 0.3);   // ambient reflectance coefficient
 vec3 ks = vec3(0.8, 0.8, 0.8);   // specular reflectance coefficient
 
-const int maxLightCount = 100;
+const int maxLightCount = 256;
 
 uniform vec3 lightPositions[maxLightCount];
 uniform vec3 lightIntensities[maxLightCount];

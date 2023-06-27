@@ -173,7 +173,7 @@ struct Scene {
     vector<Object> lightObjects;
     vector<Mesh> meshes;
     
-    static constexpr int maxLightCount = 100;
+    static constexpr int maxLightCount = 256;
     vec3 lightPos[maxLightCount];
     vec3 lightIntensity[maxLightCount];
     vec3 ligthVelocity[maxLightCount];
