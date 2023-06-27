@@ -572,6 +572,10 @@ void InitDeferredRendering(){
 
 void InitForwardRendering(){
     cout << "InitForwardRendering" << endl;
+
+    // TODO: Not sure if required at all
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void OnKeyAction(GLFWwindow* window, int key, int scancode, int action, int mods)
