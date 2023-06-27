@@ -1098,7 +1098,7 @@ void CreateShaders(){
                                         GetPath("shaders/vert_lights.glsl").data(),
                                         GetPath("shaders/frag_lights.glsl").data());
     
-    glUseProgram(deferredGeometryShader.programId);
+    glUseProgram(deferredLightShader.programId);
     
     glUniform1i(glGetUniformLocation(deferredLightShader.programId, "gPosition"), 0);
     CheckError();
