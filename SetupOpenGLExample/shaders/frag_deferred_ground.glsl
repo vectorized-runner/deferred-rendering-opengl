@@ -22,6 +22,6 @@ void main()
 
     // store specular intensity in gAlbedoSpec's alpha component
     // gAlbedoSpec.a = texture(texture_specular1, TexCoords).r;
-    gAlbedoSpec.a = vec3(0);
+    gAlbedoSpec.a = 0;
 
 }
