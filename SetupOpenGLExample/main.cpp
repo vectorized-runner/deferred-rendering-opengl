@@ -551,8 +551,11 @@ void InitDeferredRendering(){
         std::cout << "Framebuffer not complete!" << std::endl;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
       
-    // TODO:::
-    // then also add render buffer object as depth buffer and check for completeness.
+    // TODO: Pass lighting info to the Shader.
+    
+    // TODO: Shader configuration.
+    
+    // TODO: Render passes.
 }
 
 void InitForwardRendering(){
