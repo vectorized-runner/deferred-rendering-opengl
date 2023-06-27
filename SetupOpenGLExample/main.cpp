@@ -1326,15 +1326,16 @@ void RunSimulation(){
 void DrawGround(const mat4& projectionMatrix, const mat4& viewingMatrix, bool renderDeferred){
     
     auto modelingMatrix = groundTransform.GetMatrix();
+    auto programId = renderDeferred ? deferredGroundShader.programId : forwardGroundShader.programId;
     
-    glUseProgram(forwardGroundShader.programId);
+    glUseProgram(programId);
     // bind textures on corresponding texture units
     // glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, ourTexture);
     
-    glUniformMatrix4fv(glGetUniformLocation(forwardGroundShader.programId, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-    glUniformMatrix4fv(glGetUniformLocation(forwardGroundShader.programId, "view"), 1, GL_FALSE, glm::value_ptr(viewingMatrix));
-    glUniformMatrix4fv(glGetUniformLocation(forwardGroundShader.programId, "model"), 1, GL_FALSE, glm::value_ptr(modelingMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(programId, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(programId, "view"), 1, GL_FALSE, glm::value_ptr(viewingMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(programId, "model"), 1, GL_FALSE, glm::value_ptr(modelingMatrix));
 
     glBindVertexArray(groundVao);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
