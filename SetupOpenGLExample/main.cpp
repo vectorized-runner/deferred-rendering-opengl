@@ -1120,9 +1120,9 @@ void CreateShaders(){
     
     glUseProgram(deferredGeometryShader.programId);
     
-    glUniform1i(glGetUniformLocation(deferredGeometryShader.programId, "gPosition"), 0);
-    glUniform1i(glGetUniformLocation(deferredGeometryShader.programId, "gNormal"), 1);
-    glUniform1i(glGetUniformLocation(deferredGeometryShader.programId, "gAlbedoSpec"), 2);
+    glUniform1i(glGetUniformLocation(deferredLightShader.programId, "gPosition"), 0);
+    glUniform1i(glGetUniformLocation(deferredLightShader.programId, "gNormal"), 1);
+    glUniform1i(glGetUniformLocation(deferredLightShader.programId, "gAlbedoSpec"), 2);
 }
 
 void InitProgram(GLFWwindow* window){
