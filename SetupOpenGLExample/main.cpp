@@ -804,9 +804,7 @@ void InitEnemies() {
         auto enemyPos = RandomPointInCircle(playerPos, spawnRadiusMin, spawnRadiusMax);
         
         auto dist = distance(playerPos, enemyPos);
-        
-        cout << "Dist is: " << to_string(dist) << endl;
-        
+                
         obj.transform.position = enemyPos + vec3(0, enemyScale, 0);
         obj.transform.scale = vec3(enemyScale);
         
@@ -1079,7 +1077,7 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
         
         CreateLight(lightPos, lightVelocity);
         
-        cout << "light created" << endl;
+        // cout << "light created" << endl;
     }
 }
 
