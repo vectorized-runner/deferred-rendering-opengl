@@ -14,6 +14,11 @@ uniform vec3 lightIntensities[maxLightCount];
 uniform vec3 cameraPos;
 uniform int lightCount;
 
+vec3 Iamb = vec3(0.8, 0.8, 0.8); // ambient light intensity
+vec3 kd = vec3(1, 0.2, 0.2);     // diffuse reflectance coefficient
+vec3 ka = vec3(0.3, 0.3, 0.3);   // ambient reflectance coefficient
+vec3 ks = vec3(0.8, 0.8, 0.8);   // specular reflectance coefficient
+
 void main()
 {
     // retrieve data from gbuffer
@@ -22,29 +27,33 @@ void main()
     vec3 Diffuse = texture(gAlbedoSpec, TexCoords).rgb;
     float Specular = texture(gAlbedoSpec, TexCoords).a;
     
+    vec3 totalDiffuse = vec3(0, 0, 0);
+    vec3 totalSpecular = vec3(0, 0, 0);
+    
     // then calculate lighting as usual
     vec3 lighting  = Diffuse * 0.1; // hard-coded ambient component
     vec3 viewDir  = normalize(cameraPos - FragPos);
     for(int i = 0; i < lightCount; ++i)
     {
-        // calculate distance between light source and current fragment
-        float distance = length(lights[i].Position - FragPos);
-        if(distance < lights[i].Radius)
-        {
-            // diffuse
-            vec3 lightPos = lightPositions[i];
-            vec3 lightDir = normalize(lightPos - FragPos);
-            vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Diffuse * lights[i].Color;
-            // specular
-            vec3 halfwayDir = normalize(lightDir + viewDir);
-            float spec = pow(max(dot(Normal, halfwayDir), 0.0), 16.0);
-            vec3 specular = lights[i].Color * spec * Specular;
-            // attenuation
-            float attenuation = 1.0 / (1.0 + lights[i].Linear * distance + lights[i].Quadratic * distance * distance);
-            diffuse *= attenuation;
-            specular *= attenuation;
-            lighting += diffuse + specular;
-        }
+        vec3 lightPos = lightPositions[i];
+        float dsq = distancesq(lightPos, FragPos);
+        vec3 I = lightIntensities[i] / dsq;
+        vec3 L = normalize(lightPos - FragPos);
+        vec3 V = normalize(cameraPos - FragPos);
+        vec3 H = normalize(L + V);
+        vec3 N = normalize(fragWorldNor);
+        
+        float NdotL = dot(N, L); // for diffuse component
+        float NdotH = dot(N, H); // for specular component
+
+        vec3 diffuseColor = I * kd * max(0, NdotL);
+        vec3 specularColor = I * ks * pow(max(0, NdotH), 100);
+        
+        totalDiffuse += diffuseColor;
+        totalSpecular += specularColor;
     }
-    FragColor = vec4(lighting, 1.0);
+    
+    vec3 ambientColor = Iamb * ka;
+
+    FragColor = vec4(totalDiffuse + totalSpecular + ambientColor, 1);
 }
