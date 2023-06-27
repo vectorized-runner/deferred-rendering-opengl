@@ -1349,8 +1349,8 @@ void DrawSceneForward(){
     DrawGround(projectionMatrix, viewingMatrix);
 }
 
+// TODO: Actual implementation of each method in here.
 void DrawSceneDeferred(){
-    // TODO:
 }
 
 void DrawScene(){
