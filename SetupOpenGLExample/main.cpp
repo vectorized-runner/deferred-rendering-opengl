@@ -1011,6 +1011,7 @@ void InitProgram(GLFWwindow* window){
     InitGround();
     InitScene();
     InitEnemies();
+    InitDeferredRendering();
     
     // Hide the cursor
     // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
@@ -1019,12 +1020,6 @@ void InitProgram(GLFWwindow* window){
     glfwSetMouseButtonCallback(window, MouseButtonCallback);
 }
 
-void ClearScreen(){
-    glClearColor(0, 0, 0, 1);
-    glClearDepth(1.0f);
-    glClearStencil(0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-}
 
 void DrawMesh(const mat4& projectionMatrix, const mat4& viewingMatrix, const mat4& modelingMatrix, const Mesh& mesh){
     if(wireframeMode){
@@ -1234,6 +1229,11 @@ void DrawGround(const mat4& projectionMatrix, const mat4& viewingMatrix){
 }
 
 void DrawSceneForward(){
+    glClearColor(0, 0, 0, 1);
+    glClearDepth(1.0f);
+    glClearStencil(0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    
     auto objectCount = scene.objects.size();
     auto projectionMatrix = camera.GetProjectionMatrix();
     auto viewingMatrix = camera.GetViewingMatrix();
@@ -1264,7 +1264,6 @@ void DrawScene(){
 }
 
 void Render(GLFWwindow* window){
-    ClearScreen();
     DrawScene();
     
     glfwSwapBuffers(window);
