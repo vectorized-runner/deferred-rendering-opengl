@@ -649,6 +649,13 @@ void OnKeyAction(GLFWwindow* window, int key, int scancode, int action, int mods
     else if(key == GLFW_KEY_P){
         if(isPress){
             simulationPaused = !simulationPaused;
+            
+            if(simulationPaused){
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            }
+            else{
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            }
         }
     }
 }
