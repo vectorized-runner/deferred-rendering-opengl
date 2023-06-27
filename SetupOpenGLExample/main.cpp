@@ -959,6 +959,7 @@ void UpdateLightData(){
     }
 }
 
+// TODO: Ensure light data uses the same naming/offsets in the Shaders.
 void CreateLight(vec3 pos, vec3 vel){
     if(scene.lightCount >= scene.maxLightCount)
     {
