@@ -194,9 +194,12 @@ bool firstFrame = true;
 random_device rd;
 mt19937 gen(rd());
 
-Shader objShaderDeferred;
-Shader objShaderForward;
-Shader lightShaderForward;
+Shader deferredLightShader;
+Shader deferredGeometryShader;
+Shader forwardGeometryShader;
+Shader lightMeshShader;
+// TODO: Ground Shader Forward/Deferred
+Shader forwardGroundShader;
 
 const float intensityMin = 5.0f;
 const float intensityMax = 100.0f;
@@ -804,7 +807,7 @@ void InitEnemies() {
         obj.transform.position = enemyPos + vec3(0, enemyScale, 0);
         obj.transform.scale = vec3(enemyScale);
         
-        auto mesh = CreateMesh("armadillo.obj", objShaderForward, objShaderDeferred);
+        auto mesh = CreateMesh("armadillo.obj", forwardGeometryShader, deferredGeometryShader);
         obj.meshIndices.push_back(mesh);
         
         auto objIndex = scene.objects.size();
@@ -834,9 +837,7 @@ void InitPlayer(){
     player.objIndex = index;
 }
 
-// TODO: Ground Shader Forward/Deferred
 Transform groundTransform;
-Shader groundShader;
 unsigned int groundVbo;
 unsigned int groundVao;
 unsigned int groundEbo;
@@ -847,7 +848,7 @@ void InitGround(){
     groundTransform.rotation = rotate(groundTransform.rotation, radians(90.0f), vec3(1.0f, 0.0f, 0.0f));
     groundTransform.scale = vec3(1000.0f, 1000.0f, 1000.0f);
     
-    groundShader = CreateShaderProgram(GetPath("shaders/vert_ground.glsl").data(), GetPath("shaders/frag_ground.glsl").data());
+    forwardGroundShader = CreateShaderProgram(GetPath("shaders/vert_ground.glsl").data(), GetPath("shaders/frag_ground.glsl").data());
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -911,8 +912,8 @@ void InitGround(){
     }
     stbi_image_free(data);
 
-    glUseProgram(groundShader.programId);
-    glUniform1i(glGetUniformLocation(groundShader.programId, "ourTexture"), 0);
+    glUseProgram(forwardGroundShader.programId);
+    glUniform1i(glGetUniformLocation(forwardGroundShader.programId, "ourTexture"), 0);
 }
 
 void CheckError(){
@@ -990,7 +991,7 @@ void CreateLight(vec3 pos, vec3 vel){
     lightObj.transform.position = pos;
     lightObj.transform.scale = vec3(0.1f);
     // TODO: Handle lights differently
-    auto lightMesh = CreateMesh("sphere.obj", lightShaderForward, lightShaderForward);
+    auto lightMesh = CreateMesh("sphere.obj", lightMeshShader, lightMeshShader);
     auto lightShader = GetRenderShader(GetMesh(lightMesh));
     glUseProgram(lightShader);
     auto unlitLoc = glGetUniformLocation(lightShader, "unlit");
@@ -1024,7 +1025,7 @@ void AddRandomObjs(){
     armadillo.name = "Armadillo";
     armadillo.transform.position = vec3(15.0f, 0.0f, 15.0f);
     armadillo.transform.scale = vec3(5, 5, 5);
-    armadillo.meshIndices.push_back(CreateMesh("armadillo.obj", objShaderForward, objShaderDeferred));
+    armadillo.meshIndices.push_back(CreateMesh("armadillo.obj", forwardGeometryShader, deferredGeometryShader));
     auto programId = GetRenderShader(GetMesh(armadillo.meshIndices[0]));
     glUseProgram(programId);
     float color[] = {0.8f, 0.0f, 0.0f};
@@ -1036,7 +1037,7 @@ void AddRandomObjs(){
     bunny.name = "Bunny";
     bunny.transform.position = vec3(-15, 0.0f, -15.0f);
     bunny.transform.scale = vec3(10, 10, 10);
-    bunny.meshIndices.push_back(CreateMesh("bunny.obj", objShaderForward, objShaderDeferred));
+    bunny.meshIndices.push_back(CreateMesh("bunny.obj", forwardGeometryShader, deferredGeometryShader));
     programId = GetRenderShader(GetMesh(bunny.meshIndices[0]));
     glUseProgram(programId);
     float color1[] = {0.8f, 0.8f, 0.0f};
@@ -1047,7 +1048,7 @@ void AddRandomObjs(){
     teapot.name = "Teapot";
     teapot.transform.position = vec3(-15, 0.0f, 15.0f);
     teapot.transform.scale = vec3(5, 5, 5);
-    teapot.meshIndices.push_back(CreateMesh("teapot.obj", objShaderForward, objShaderDeferred));
+    teapot.meshIndices.push_back(CreateMesh("teapot.obj", forwardGeometryShader, deferredGeometryShader));
     programId = GetRenderShader(GetMesh(teapot.meshIndices[0]));
     glUseProgram(programId);
     float color2[] = {0.0f, 0.8f, 0.8f};
@@ -1072,7 +1073,7 @@ void InitScene(){
             cube.name = "Cube " + to_string(idx);
             cube.transform.position = vec3(x * separation, scaleY, z * separation);
             cube.transform.scale = vec3(scaleXZ, scaleY, scaleXZ);
-            cube.meshIndices.push_back(CreateMesh("cube.obj", objShaderForward, objShaderDeferred));
+            cube.meshIndices.push_back(CreateMesh("cube.obj", forwardGeometryShader, deferredGeometryShader));
         
             scene.objects.push_back(cube);
             
@@ -1101,23 +1102,23 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
 }
 
 void CreateShaders(){
-    objShaderForward = CreateShaderProgram(
+    forwardGeometryShader = CreateShaderProgram(
                                         GetPath("shaders/vert_forward.glsl").data(),
                                         GetPath("shaders/frag_forward.glsl").data());
     
-    objShaderDeferred = CreateShaderProgram(
+    deferredGeometryShader = CreateShaderProgram(
                                         GetPath("shaders/vert_deferred_geometry.glsl").data(),
                                         GetPath("shaders/frag_deferred_geometry.glsl").data());
     
-    lightShaderForward = CreateShaderProgram(
+    lightMeshShader = CreateShaderProgram(
                                         GetPath("shaders/vert_lights.glsl").data(),
                                         GetPath("shaders/frag_lights.glsl").data());
     
-    glUseProgram(objShaderDeferred.programId);
+    glUseProgram(deferredGeometryShader.programId);
     
-    glUniform1i(glGetUniformLocation(objShaderDeferred.programId, "gPosition"), 0);
-    glUniform1i(glGetUniformLocation(objShaderDeferred.programId, "gNormal"), 1);
-    glUniform1i(glGetUniformLocation(objShaderDeferred.programId, "gAlbedoSpec"), 2);
+    glUniform1i(glGetUniformLocation(deferredGeometryShader.programId, "gPosition"), 0);
+    glUniform1i(glGetUniformLocation(deferredGeometryShader.programId, "gNormal"), 1);
+    glUniform1i(glGetUniformLocation(deferredGeometryShader.programId, "gAlbedoSpec"), 2);
 }
 
 void InitProgram(GLFWwindow* window){
@@ -1332,15 +1333,15 @@ void DrawGround(const mat4& projectionMatrix, const mat4& viewingMatrix){
     
     auto modelingMatrix = groundTransform.GetMatrix();
     
-    glUseProgram(groundShader.programId);
+    glUseProgram(forwardGroundShader.programId);
     // bind textures on corresponding texture units
     // glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, ourTexture);
     
     // TODO: Make this matrix naming same in all Shaders
-    glUniformMatrix4fv(glGetUniformLocation(groundShader.programId, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-    glUniformMatrix4fv(glGetUniformLocation(groundShader.programId, "view"), 1, GL_FALSE, glm::value_ptr(viewingMatrix));
-    glUniformMatrix4fv(glGetUniformLocation(groundShader.programId, "model"), 1, GL_FALSE, glm::value_ptr(modelingMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(forwardGroundShader.programId, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(forwardGroundShader.programId, "view"), 1, GL_FALSE, glm::value_ptr(viewingMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(forwardGroundShader.programId, "model"), 1, GL_FALSE, glm::value_ptr(modelingMatrix));
 
     glBindVertexArray(groundVao);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
