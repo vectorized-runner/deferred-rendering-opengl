@@ -999,46 +999,7 @@ void InitLights(){
     }
 }
 
-void AddRandomObjs(){
-    auto armadillo = Object();
-    armadillo.name = "Armadillo";
-    armadillo.transform.position = vec3(15.0f, 0.0f, 15.0f);
-    armadillo.transform.scale = vec3(5, 5, 5);
-    armadillo.meshIndices.push_back(CreateMesh("armadillo.obj", forwardGeometryShader, deferredGeometryShader));
-    auto programId = GetRenderShader(GetMesh(armadillo.meshIndices[0]));
-    glUseProgram(programId);
-    float color[] = {0.8f, 0.0f, 0.0f};
-    int colorLoc = glGetUniformLocation(programId, "tint");
-    glUniform3fv(colorLoc, 1, color);
-    scene.objects.push_back(armadillo);
-    
-    auto bunny = Object();
-    bunny.name = "Bunny";
-    bunny.transform.position = vec3(-15, 0.0f, -15.0f);
-    bunny.transform.scale = vec3(10, 10, 10);
-    bunny.meshIndices.push_back(CreateMesh("bunny.obj", forwardGeometryShader, deferredGeometryShader));
-    programId = GetRenderShader(GetMesh(bunny.meshIndices[0]));
-    glUseProgram(programId);
-    float color1[] = {0.8f, 0.8f, 0.0f};
-    glUniform3fv(colorLoc, 1, color1);
-    scene.objects.push_back(bunny);
-    
-    auto teapot = Object();
-    teapot.name = "Teapot";
-    teapot.transform.position = vec3(-15, 0.0f, 15.0f);
-    teapot.transform.scale = vec3(5, 5, 5);
-    teapot.meshIndices.push_back(CreateMesh("teapot.obj", forwardGeometryShader, deferredGeometryShader));
-    programId = GetRenderShader(GetMesh(teapot.meshIndices[0]));
-    glUseProgram(programId);
-    float color2[] = {0.0f, 0.8f, 0.8f};
-    glUniform3fv(colorLoc, 1, color2);
-    scene.objects.push_back(teapot);
-}
-
-void InitScene(){
-
-    // AddRandomObjs();
-    
+void InitScene(){    
     int cubeCountX = 100;
     int cubeCountZ = 100;
     int idx = 0;
