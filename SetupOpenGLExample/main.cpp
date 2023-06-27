@@ -800,7 +800,14 @@ void InitEnemies() {
         obj.transform.position = enemyPos + vec3(0, enemyScale, 0);
         obj.transform.scale = vec3(enemyScale);
         
-        auto mesh = CreateMesh("armadillo.obj", "shaders/vert_forward.glsl", "shaders/frag_forward.glsl");
+        auto forwardShader = CreateShaderProgram(
+                                                 GetPath("shaders/vert_forward.glsl").data(),
+                                                 GetPath("shaders/frag_forward.glsl").data());
+        
+        
+        // TODO: Defered
+        
+        auto mesh = CreateMesh("armadillo.obj", forwardShader, forwardShader);
         obj.meshIndices.push_back(mesh);
         
         auto objIndex = scene.objects.size();
