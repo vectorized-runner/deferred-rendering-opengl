@@ -1163,12 +1163,13 @@ void DrawMesh(const mat4& projectionMatrix, const mat4& viewingMatrix, const mat
     glDrawElements(GL_TRIANGLES, mesh.faces.size() * 3, GL_UNSIGNED_INT, 0);
 }
 
-void DrawObject(const mat4& projectionMatrix, const mat4& viewingMatrix, const Object& obj) {
+void DrawObject(const mat4& projectionMatrix, const mat4& viewingMatrix, const Object& obj, bool deferred) {
     const auto modelingMatrix = obj.transform.GetMatrix();
     
     for(int i = 0; i < obj.meshIndices.size(); i++){
         auto& mesh = GetMesh(obj.meshIndices[i]);
-        DrawMesh(projectionMatrix, viewingMatrix, modelingMatrix, mesh);
+        auto shader = deferred ? mesh.deferredShader : mesh.forwardShader;
+        DrawMesh(projectionMatrix, viewingMatrix, modelingMatrix, mesh, shader);
     }
 }
 
