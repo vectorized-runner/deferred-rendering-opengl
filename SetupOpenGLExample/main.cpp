@@ -198,8 +198,8 @@ Shader deferredLightShader;
 Shader deferredGeometryShader;
 Shader forwardGeometryShader;
 Shader lightMeshShader;
-// TODO: Ground Shader Forward/Deferred
 Shader forwardGroundShader;
+Shader deferredGroundShader;
 
 const float intensityMin = 5.0f;
 const float intensityMax = 100.0f;
@@ -849,7 +849,8 @@ void InitGround(){
     groundTransform.rotation = rotate(groundTransform.rotation, radians(90.0f), vec3(1.0f, 0.0f, 0.0f));
     groundTransform.scale = vec3(1000.0f, 1000.0f, 1000.0f);
     
-    forwardGroundShader = CreateShaderProgram(GetPath("shaders/vert_ground.glsl").data(), GetPath("shaders/frag_ground.glsl").data());
+    forwardGroundShader = CreateShaderProgram(GetPath("shaders/vert_forward_ground.glsl").data(), GetPath("shaders/frag_forward_ground.glsl").data());
+    deferredGroundShader = CreateShaderProgram(GetPath("shaders/vert_deferred_ground.glsl").data(), GetPath("shaders/frag_deferred_ground.glsl").data());
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -1322,7 +1323,7 @@ void RunSimulation(){
     firstFrame = false;
 }
 
-void DrawGround(const mat4& projectionMatrix, const mat4& viewingMatrix){
+void DrawGround(const mat4& projectionMatrix, const mat4& viewingMatrix, bool renderDeferred){
     
     auto modelingMatrix = groundTransform.GetMatrix();
     
@@ -1361,7 +1362,7 @@ void DrawScene(){
         DrawObject(projectionMatrix, viewingMatrix, obj, renderDeferred);
     }
     
-    DrawGround(projectionMatrix, viewingMatrix);
+    DrawGround(projectionMatrix, viewingMatrix, renderDeferred);
 }
 
 void DrawSceneForward(){
