@@ -1296,9 +1296,10 @@ void DrawGround(const mat4& projectionMatrix, const mat4& viewingMatrix){
     // glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, ourTexture);
     
-    glUniformMatrix4fv(glGetUniformLocation(groundShaderId, "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-    glUniformMatrix4fv(glGetUniformLocation(groundShaderId, "viewingMatrix"), 1, GL_FALSE, glm::value_ptr(viewingMatrix));
-    glUniformMatrix4fv(glGetUniformLocation(groundShaderId, "modelingMatrix"), 1, GL_FALSE, glm::value_ptr(modelingMatrix));
+    // TODO: Make this matrix naming same in all Shaders
+    glUniformMatrix4fv(glGetUniformLocation(groundShader.programId, "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(groundShader.programId, "viewingMatrix"), 1, GL_FALSE, glm::value_ptr(viewingMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(groundShader.programId, "modelingMatrix"), 1, GL_FALSE, glm::value_ptr(modelingMatrix));
 
     glBindVertexArray(groundVao);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
