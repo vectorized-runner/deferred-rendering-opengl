@@ -134,7 +134,8 @@ struct Mesh {
     int gNormalDataSizeInBytes;
     int vbo;
     int vao;
-    Shader shader;
+    Shader forwardShader;
+    Shader deferredShader;
 };
 
 struct Object {
