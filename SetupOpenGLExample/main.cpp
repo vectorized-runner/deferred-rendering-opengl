@@ -1463,6 +1463,12 @@ void DrawSceneDeferred(){
     // depth buffer in another shader stage (or somehow see to match the default framebuffer's internal format with the FBO's internal format).
     glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    for(int i = 0; i < scene.lightObjects.size(); i++){
+        const auto& obj = scene.lightObjects[i];
+        
+        DrawObject(projectionMatrix, viewingMatrix, obj, renderDeferred);
+    }
   
     // This doesn't work.
     // DrawGround(projectionMatrix, viewingMatrix);
