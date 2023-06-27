@@ -25,3 +25,21 @@ string GetPath(string originalPath){
 
 https://youtu.be/MHlbNbWlrIM
 
+
+--- 
+
+Gameplay
+
+WASD - Walking
+
+Mouse Scroll - Camera Panning
+
+Left Mouse Click - Throwing Lights
+
+P - Toggle Pause/Unpause simulation
+
+F - Toggle Forward/Deferred rendering
+
+Escape - Exit Program
+
+Render Mode, Light Count and Render Time is printed on Console.
