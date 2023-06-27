@@ -1110,6 +1110,10 @@ void CreateShaders(){
                                         GetPath("shaders/vert_deferred_geometry.glsl").data(),
                                         GetPath("shaders/frag_deferred_geometry.glsl").data());
     
+    deferredLightShader = CreateShaderProgram(
+                                        GetPath("shaders/vert_deferred_light.glsl").data(),
+                                        GetPath("shaders/frag_deferred_light.glsl").data());
+    
     lightMeshShader = CreateShaderProgram(
                                         GetPath("shaders/vert_lights.glsl").data(),
                                         GetPath("shaders/frag_lights.glsl").data());
