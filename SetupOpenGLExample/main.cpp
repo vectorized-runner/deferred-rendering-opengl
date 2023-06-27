@@ -498,6 +498,11 @@ void InitVBO(Mesh& mesh){
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(mesh.gVertexDataSizeInBytes));
 }
 
+unsigned int gBuffer;
+unsigned int gPosition;
+unsigned int gNormal;
+unsigned int gColorSpec;
+
 void InitDeferredRendering(){
     cout << "InitDeferredRendering" << endl;
 }
