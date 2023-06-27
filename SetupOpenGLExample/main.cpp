@@ -830,8 +830,9 @@ void InitPlayer(){
     player.objIndex = index;
 }
 
+// TODO: Ground Shader Forward/Deferred
 Transform groundTransform;
-int groundShaderId;
+Shader groundShader;
 unsigned int groundVbo;
 unsigned int groundVao;
 unsigned int groundEbo;
@@ -842,7 +843,7 @@ void InitGround(){
     groundTransform.rotation = rotate(groundTransform.rotation, radians(90.0f), vec3(1.0f, 0.0f, 0.0f));
     groundTransform.scale = vec3(1000.0f, 1000.0f, 1000.0f);
     
-    groundShaderId = CreateShaderProgram(GetPath("shaders/vert_ground.glsl").data(), GetPath("shaders/frag_ground.glsl").data());
+    groundShader = CreateShaderProgram(GetPath("shaders/vert_ground.glsl").data(), GetPath("shaders/frag_ground.glsl").data());
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -906,8 +907,8 @@ void InitGround(){
     }
     stbi_image_free(data);
 
-    glUseProgram(groundShaderId);
-    glUniform1i(glGetUniformLocation(groundShaderId, "ourTexture"), 0);
+    glUseProgram(groundShader.programId);
+    glUniform1i(glGetUniformLocation(groundShader.programId, "ourTexture"), 0);
 }
 
 void CheckError(){
