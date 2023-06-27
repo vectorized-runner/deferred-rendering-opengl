@@ -15,9 +15,7 @@ uniform vec3 cameraPos;
 uniform int lightCount;
 
 vec3 Iamb = vec3(0.8, 0.8, 0.8); // ambient light intensity
-vec3 kd = vec3(1, 0.2, 0.2);     // diffuse reflectance coefficient
 vec3 ka = vec3(0.3, 0.3, 0.3);   // ambient reflectance coefficient
-vec3 ks = vec3(0.8, 0.8, 0.8);   // specular reflectance coefficient
 
 float distancesq(vec3 a, vec3 b){
     vec3 diff = a - b;
@@ -48,8 +46,8 @@ void main()
         float NdotL = dot(N, L); // for diffuse component
         float NdotH = dot(N, H); // for specular component
 
-        vec3 diffuseColor = I * kd * max(0, NdotL);
-        vec3 specularColor = I * ks * pow(max(0, NdotH), 100);
+        vec3 diffuseColor = I * Diffuse * max(0, NdotL);
+        vec3 specularColor = I * Specular * pow(max(0, NdotH), 100);
         
         totalDiffuse += diffuseColor;
         totalSpecular += specularColor;
