@@ -753,7 +753,7 @@ const Mesh& GetMesh(int index){
 }
 
 
-int CreateMesh(const string& objPath, const string& vertexPath, const string& fragPath){
+int CreateMesh(const string& objPath, Shader forwardShader, Shader deferredShader){
     auto idx = GetMeshIndex(objPath);
     if(idx != -1){
         return idx;
@@ -762,7 +762,8 @@ int CreateMesh(const string& objPath, const string& vertexPath, const string& fr
     Mesh mesh;
     mesh.path = objPath;
     assert(ParseObj(GetPath(objPath), mesh));
-    mesh.shader.programId = CreateShaderProgram(GetPath(vertexPath).data(), GetPath(fragPath).data());
+    mesh.forwardShader = forwardShader;
+    mesh.deferredShader = deferredShader;
     InitVBO(mesh);
     idx = scene.meshes.size();
     scene.meshes.push_back(mesh);
