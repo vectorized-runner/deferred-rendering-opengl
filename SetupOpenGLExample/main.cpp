@@ -954,7 +954,9 @@ void UpdateLightData(){
         for(int j = 0; j < meshCount; j++){
             auto& mesh = scene.meshes[obj.meshIndices[j]];
             UpdateLightDataForShader(mesh.forwardShader);
-            UpdateLightDataForShader(mesh.deferredShader);
+            
+            // TODO: Handle deferred after setting up light positions later
+            // UpdateLightDataForShader(mesh.deferredShader);
         }
     }
 }
