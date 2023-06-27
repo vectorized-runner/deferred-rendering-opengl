@@ -1132,7 +1132,7 @@ void InitProgram(GLFWwindow* window){
 }
 
 
-void DrawMesh(const mat4& projectionMatrix, const mat4& viewingMatrix, const mat4& modelingMatrix, const Mesh& mesh){
+void DrawMesh(const mat4& projectionMatrix, const mat4& viewingMatrix, const mat4& modelingMatrix, const Mesh& mesh, const Shader& shader){
     if(wireframeMode){
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
@@ -1140,7 +1140,7 @@ void DrawMesh(const mat4& projectionMatrix, const mat4& viewingMatrix, const mat
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
     
-    auto shaderId = GetRenderShader(mesh);
+    auto shaderId = shader.programId;
     glUseProgram(shaderId);
     
     glBindVertexArray(mesh.vao);
