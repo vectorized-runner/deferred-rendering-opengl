@@ -1110,8 +1110,11 @@ void CreateShaders(){
     glUseProgram(deferredGeometryShader.programId);
     
     glUniform1i(glGetUniformLocation(deferredLightShader.programId, "gPosition"), 0);
+    CheckError();
     glUniform1i(glGetUniformLocation(deferredLightShader.programId, "gNormal"), 1);
+    CheckError();
     glUniform1i(glGetUniformLocation(deferredLightShader.programId, "gAlbedoSpec"), 2);
+    CheckError();
 }
 
 void InitProgram(GLFWwindow* window){
