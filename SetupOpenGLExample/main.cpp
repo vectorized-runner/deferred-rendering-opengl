@@ -1141,7 +1141,7 @@ void DrawMesh(const mat4& projectionMatrix, const mat4& viewingMatrix, const mat
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
     
-    auto shaderId = mesh.shader.programId;
+    auto shaderId = GetRenderShader(mesh);
     glUseProgram(shaderId);
     
     glBindVertexArray(mesh.vao);
