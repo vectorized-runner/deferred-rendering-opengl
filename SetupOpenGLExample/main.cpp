@@ -498,6 +498,14 @@ void InitVBO(Mesh& mesh){
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(mesh.gVertexDataSizeInBytes));
 }
 
+void InitDeferredRendering(){
+    cout << "InitDeferredRendering" << endl;
+}
+
+void InitForwardRendering(){
+    cout << "InitForwardRendering" << endl;
+}
+
 void OnKeyAction(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if(action == GLFW_REPEAT){
@@ -555,6 +563,13 @@ void OnKeyAction(GLFWwindow* window, int key, int scancode, int action, int mods
     else if(key == GLFW_KEY_F){
         if(isPress){
             renderMode = !renderMode;
+            
+            if(renderMode == 1){
+                InitDeferredRendering();
+            }
+            else{
+                InitForwardRendering();
+            }
         }
     }
 }
@@ -1011,7 +1026,6 @@ void InitProgram(GLFWwindow* window){
     InitGround();
     InitScene();
     InitEnemies();
-    InitDeferredRendering();
     
     // Hide the cursor
     // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
