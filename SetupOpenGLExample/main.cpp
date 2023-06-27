@@ -951,26 +951,6 @@ void UpdateLightDataForShader(Shader shader){
     CheckError();
 }
 
-void UpdateLightData(){
-    auto objectCount = scene.objects.size();
-    
-    for(int i = 0; i < objectCount; i++){
-        auto& obj = scene.objects[i];
-        if(obj.name == "Light"){
-            continue;
-        }
-        
-        auto meshCount = obj.meshIndices.size();
-        for(int j = 0; j < meshCount; j++){
-            auto& mesh = scene.meshes[obj.meshIndices[j]];
-            UpdateLightDataForShader(mesh.forwardShader);
-            
-            // TODO: Handle deferred after setting up light positions later
-            // UpdateLightDataForShader(mesh.deferredShader);
-        }
-    }
-}
-
 int GetRenderShader(const Mesh& mesh){
     if(renderMode == 0){
         // Forward
@@ -1291,6 +1271,11 @@ void UpdateTime() {
     auto newTime = (float)glfwGetTime();
     gameTime.deltaTime = newTime - gameTime.time;
     gameTime.time = newTime;
+}
+
+void UpdateLightData(){
+    UpdateLightDataForShader(deferredLightShader);
+    UpdateLightDataForShader(forwardGeometryShader);
 }
 
 void UpdateLights(){
