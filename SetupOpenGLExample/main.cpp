@@ -1363,7 +1363,7 @@ void DrawSceneForward(){
         if(obj.name == "Player")
             continue;
         
-        DrawObject(projectionMatrix, viewingMatrix, obj);
+        DrawObject(projectionMatrix, viewingMatrix, obj, renderDeferred);
     }
     
     DrawGround(projectionMatrix, viewingMatrix);
