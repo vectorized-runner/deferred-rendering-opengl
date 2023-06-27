@@ -170,6 +170,7 @@ struct Input {
 
 struct Scene {
     vector<Object> objects;
+    vector<Object> lightObjects;
     vector<Mesh> meshes;
     
     static constexpr int maxLightCount = 100;
@@ -976,7 +977,6 @@ void CreateLight(vec3 pos, vec3 vel){
     lightObj.name = "Light";
     lightObj.transform.position = pos;
     lightObj.transform.scale = vec3(0.1f);
-    // TODO: Handle lights differently
     auto lightMesh = CreateMesh("sphere.obj", lightMeshShader, lightMeshShader);
     auto lightShader = GetRenderShader(GetMesh(lightMesh));
     glUseProgram(lightShader);
@@ -986,8 +986,8 @@ void CreateLight(vec3 pos, vec3 vel){
     CheckError();
     
     lightObj.meshIndices.push_back(lightMesh);
-    auto objIndex = scene.objects.size();
-    scene.objects.push_back(lightObj);
+    auto objIndex = scene.lightObjects.size();
+    scene.lightObjects.push_back(lightObj);
     
     scene.lightObjIndex[idx] = objIndex;    
 }
@@ -1299,7 +1299,7 @@ void UpdateLights(){
             auto& pos = scene.lightPos[i];
             pos += velocity * dt;
             
-            scene.objects[scene.lightObjIndex[i]].transform.position = pos;
+            scene.lightObjects[scene.lightObjIndex[i]].transform.position = pos;
         }
         else{
             auto& velocity = scene.ligthVelocity[i];
@@ -1312,7 +1312,7 @@ void UpdateLights(){
                 scene.lightHitGround[i] = true;
             }
             
-            scene.objects[scene.lightObjIndex[i]].transform.position = pos;
+            scene.lightObjects[scene.lightObjIndex[i]].transform.position = pos;
         }
     }
     
@@ -1356,17 +1356,21 @@ void ClearScreen(){
 
 
 void DrawSceneForward(){
-    auto objectCount = scene.objects.size();
     auto projectionMatrix = camera.GetProjectionMatrix();
     auto viewingMatrix = camera.GetViewingMatrix();
     
-    for(int i = 0; i < objectCount; i++){
+    for(int i = 0; i < scene.objects.size(); i++){
         const auto& obj = scene.objects[i];
         
         // TODO: Remove later
         if(obj.name == "Player")
             continue;
         
+        DrawObject(projectionMatrix, viewingMatrix, obj, renderDeferred);
+    }
+    
+    for(int i = 0; i < scene.lightObjects.size(); i++){
+        const auto& obj = scene.lightObjects[i];
         DrawObject(projectionMatrix, viewingMatrix, obj, renderDeferred);
     }
     
