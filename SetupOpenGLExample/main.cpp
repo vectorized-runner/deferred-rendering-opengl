@@ -1107,8 +1107,8 @@ void CreateShaders(){
                                         GetPath("shaders/frag_forward.glsl").data());
     
     objShaderDeferred = CreateShaderProgram(
-                                        GetPath("shaders/vert_deferred.glsl").data(),
-                                        GetPath("shaders/frag_deferred.glsl").data());
+                                        GetPath("shaders/vert_deferred_geometry.glsl").data(),
+                                        GetPath("shaders/frag_deferred_geometry.glsl").data());
     
     lightShaderForward = CreateShaderProgram(
                                         GetPath("shaders/vert_lights.glsl").data(),
@@ -1327,7 +1327,7 @@ void DrawGround(const mat4& projectionMatrix, const mat4& viewingMatrix){
     
     auto modelingMatrix = groundTransform.GetMatrix();
     
-    glUseProgram(groundShaderId);
+    glUseProgram(groundShader.programId);
     // bind textures on corresponding texture units
     // glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, ourTexture);
