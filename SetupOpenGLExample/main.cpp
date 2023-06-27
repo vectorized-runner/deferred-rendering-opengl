@@ -1346,12 +1346,14 @@ void DrawGround(const mat4& projectionMatrix, const mat4& viewingMatrix){
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
-void DrawSceneForward(){
+void ClearScreen(){
     glClearColor(0, 0, 0, 1);
     glClearDepth(1.0f);
     glClearStencil(0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-    
+}
+
+void DrawScene(){
     auto objectCount = scene.objects.size();
     auto projectionMatrix = camera.GetProjectionMatrix();
     auto viewingMatrix = camera.GetViewingMatrix();
@@ -1367,6 +1369,10 @@ void DrawSceneForward(){
     }
     
     DrawGround(projectionMatrix, viewingMatrix);
+}
+
+void DrawSceneForward(){
+    DrawScene();
 }
 
 // TODO: Actual implementation of each method in here.
@@ -1456,16 +1462,14 @@ void DrawSceneDeferred(){
      */
 }
 
-void DrawScene(){
+void Render(GLFWwindow* window){
+    ClearScreen();
+    
     if(renderDeferred == 0){
         DrawSceneForward();
     } else{
         DrawSceneDeferred();
     }
-}
-
-void Render(GLFWwindow* window){
-    DrawScene();
     
     glfwSwapBuffers(window);
     glfwPollEvents();
