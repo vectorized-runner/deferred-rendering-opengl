@@ -1112,6 +1112,12 @@ void CreateShaders(){
     lightShaderForward = CreateShaderProgram(
                                         GetPath("shaders/vert_lights.glsl").data(),
                                         GetPath("shaders/frag_lights.glsl").data());
+    
+    glUseProgram(objShaderDeferred.programId);
+    
+    glUniform1i(glGetUniformLocation(objShaderDeferred.programId, "gPosition"), 0);
+    glUniform1i(glGetUniformLocation(objShaderDeferred.programId, "gNormal"), 1);
+    glUniform1i(glGetUniformLocation(objShaderDeferred.programId, "gAlbedoSpec"), 2);
 }
 
 void InitProgram(GLFWwindow* window){
