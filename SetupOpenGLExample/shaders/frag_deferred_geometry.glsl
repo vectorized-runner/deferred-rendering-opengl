@@ -10,7 +10,7 @@ in vec3 Normal;
 // uniform sampler2D texture_diffuse1;
 // uniform sampler2D texture_specular1;
 
-vec3 kd = vec3(1, 0.2, 0.2);     // diffuse reflectance coefficient
+vec3 kd = vec3(0.2, 0.2, 0.2);     // diffuse reflectance coefficient
 vec3 ks = vec3(0.8, 0.8, 0.8);   // specular reflectance coefficient
 
 void main()

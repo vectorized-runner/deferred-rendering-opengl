@@ -7,7 +7,7 @@
 // here for simplicity.
 
 vec3 Iamb = vec3(0.8, 0.8, 0.8); // ambient light intensity
-vec3 kd = vec3(1, 0.2, 0.2);     // diffuse reflectance coefficient
+vec3 kd = vec3(0.2, 0.2, 0.2);     // diffuse reflectance coefficient
 vec3 ka = vec3(0.3, 0.3, 0.3);   // ambient reflectance coefficient
 vec3 ks = vec3(0.8, 0.8, 0.8);   // specular reflectance coefficient
 
