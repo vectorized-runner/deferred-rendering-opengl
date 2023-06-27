@@ -199,7 +199,7 @@ Shader deferredGeometryShader;
 Shader forwardGeometryShader;
 Shader lightMeshShader;
 Shader forwardGroundShader;
-Shader deferredGroundShader;
+// Shader deferredGroundShader;
 
 const float intensityMin = 5.0f;
 const float intensityMax = 100.0f;
@@ -855,7 +855,7 @@ void InitGround(){
     groundTransform.scale = vec3(1000.0f, 1000.0f, 1000.0f);
     
     forwardGroundShader = CreateShaderProgram(GetPath("shaders/vert_forward_ground.glsl").data(), GetPath("shaders/frag_forward_ground.glsl").data());
-    deferredGroundShader = CreateShaderProgram(GetPath("shaders/vert_deferred_ground.glsl").data(), GetPath("shaders/frag_deferred_ground.glsl").data());
+    // deferredGroundShader = CreateShaderProgram(GetPath("shaders/vert_deferred_ground.glsl").data(), GetPath("shaders/frag_deferred_ground.glsl").data());
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -1328,10 +1328,11 @@ void RunSimulation(){
     firstFrame = false;
 }
 
-void DrawGround(const mat4& projectionMatrix, const mat4& viewingMatrix, bool renderDeferred){
+void DrawGround(const mat4& projectionMatrix, const mat4& viewingMatrix){
     
     auto modelingMatrix = groundTransform.GetMatrix();
-    auto programId = renderDeferred ? deferredGroundShader.programId : forwardGroundShader.programId;
+    // auto programId = renderDeferred ? deferredGroundShader.programId : forwardGroundShader.programId;
+    auto programId = forwardGroundShader.programId;
     
     glUseProgram(programId);
     // bind textures on corresponding texture units
@@ -1409,8 +1410,20 @@ void DrawSceneDeferred(){
     glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    DrawScene();
+    auto objectCount = scene.objects.size();
+    auto projectionMatrix = camera.GetProjectionMatrix();
+    auto viewingMatrix = camera.GetViewingMatrix();
     
+    for(int i = 0; i < objectCount; i++){
+        const auto& obj = scene.objects[i];
+        
+        // TODO: Remove later
+        if(obj.name == "Player")
+            continue;
+        
+        DrawObject(projectionMatrix, viewingMatrix, obj, renderDeferred);
+    }
+        
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // 2. lighting pass: calculate lighting by iterating over a screen filled quad pixel-by-pixel using the gbuffer's content.
@@ -1446,6 +1459,9 @@ void DrawSceneDeferred(){
     // depth buffer in another shader stage (or somehow see to match the default framebuffer's internal format with the FBO's internal format).
     glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  
+    // This doesn't work.
+    // DrawGround(projectionMatrix, viewingMatrix);
 
     // 3. render lights on top of scene
     // --------------------------------
