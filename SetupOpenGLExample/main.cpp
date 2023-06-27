@@ -1002,9 +1002,7 @@ void CreateLight(vec3 pos, vec3 vel){
     auto objIndex = scene.objects.size();
     scene.objects.push_back(lightObj);
     
-    scene.lightObjIndex[idx] = objIndex;
-    
-    UpdateLightData();
+    scene.lightObjIndex[idx] = objIndex;    
 }
 
 void InitLights(){
