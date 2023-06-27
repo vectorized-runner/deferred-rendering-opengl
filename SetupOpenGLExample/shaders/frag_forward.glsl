@@ -56,7 +56,8 @@ void main(void)
         totalSpecular += specularColor;
     }
     
-    vec3 ambientColor = Iamb * ka;
-
+    // vec3 ambientColor = Iamb * ka;
+    vec3 ambientColor = vec3(0);
+    
     fragColor = vec4(totalDiffuse + totalSpecular + ambientColor, 1);
 }
