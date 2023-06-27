@@ -1145,11 +1145,11 @@ void DrawMesh(const mat4& projectionMatrix, const mat4& viewingMatrix, const mat
     
     glBindVertexArray(mesh.vao);
 
-    glUniformMatrix4fv(glGetUniformLocation(shaderId, "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(shaderId, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
     CheckError();
-    glUniformMatrix4fv(glGetUniformLocation(shaderId, "viewingMatrix"), 1, GL_FALSE, glm::value_ptr(viewingMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(shaderId, "view"), 1, GL_FALSE, glm::value_ptr(viewingMatrix));
     CheckError();
-    glUniformMatrix4fv(glGetUniformLocation(shaderId, "modelingMatrix"), 1, GL_FALSE, glm::value_ptr(modelingMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(shaderId, "model"), 1, GL_FALSE, glm::value_ptr(modelingMatrix));
     CheckError();
     glUniform3fv(glGetUniformLocation(shaderId, "cameraPos"), 1, glm::value_ptr(camera.position));
     CheckError();
@@ -1332,9 +1332,9 @@ void DrawGround(const mat4& projectionMatrix, const mat4& viewingMatrix){
     glBindTexture(GL_TEXTURE_2D, ourTexture);
     
     // TODO: Make this matrix naming same in all Shaders
-    glUniformMatrix4fv(glGetUniformLocation(groundShader.programId, "projectionMatrix"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
-    glUniformMatrix4fv(glGetUniformLocation(groundShader.programId, "viewingMatrix"), 1, GL_FALSE, glm::value_ptr(viewingMatrix));
-    glUniformMatrix4fv(glGetUniformLocation(groundShader.programId, "modelingMatrix"), 1, GL_FALSE, glm::value_ptr(modelingMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(groundShader.programId, "projection"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(groundShader.programId, "view"), 1, GL_FALSE, glm::value_ptr(viewingMatrix));
+    glUniformMatrix4fv(glGetUniformLocation(groundShader.programId, "model"), 1, GL_FALSE, glm::value_ptr(modelingMatrix));
 
     glBindVertexArray(groundVao);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
