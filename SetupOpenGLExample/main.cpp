@@ -1073,7 +1073,7 @@ void InitScene(){
             cube.name = "Cube " + to_string(idx);
             cube.transform.position = vec3(x * separation, scaleY, z * separation);
             cube.transform.scale = vec3(scaleXZ, scaleY, scaleXZ);
-            cube.meshIndices.push_back(CreateMesh("cube.obj", "shaders/vert.glsl", "shaders/frag.glsl"));
+            cube.meshIndices.push_back(CreateMesh("cube.obj", objShaderForward, objShaderDeferred));
         
             scene.objects.push_back(cube);
             
