@@ -1236,8 +1236,12 @@ void UpdateCamera(){
     camera.lookDir = carTf.Forward();
 }
 
+float GetCurrentTime(){
+    return (float)glfwGetTime();
+}
+
 void UpdateTime() {
-    auto newTime = (float)glfwGetTime();
+    auto newTime = GetCurrentTime();
     gameTime.deltaTime = newTime - gameTime.time;
     gameTime.time = newTime;
 }
@@ -1498,7 +1502,14 @@ void ProgramLoop(GLFWwindow* window){
             RunSimulation();
         }
         
+        auto renderBegin = GetCurrentTime();
         Render(window);
+        auto renderEnd = GetCurrentTime();
+        auto renderDt = renderEnd - renderBegin;
+        auto renderMs = renderDt * 1000;
+        auto modeText = renderDeferred ? "Deferred" : "Forward";
+        auto lightCount = to_string(scene.lightCount);
+        cout << "Render Milliseconds: " << to_string(renderMs) << " Mode: " << modeText << " LightCount: " << lightCount << endl;
     }
 }
 
