@@ -315,7 +315,7 @@ bool ParseObj(const string& fileName, Mesh& result)
                 }
                 else
                 {
-                    cout << "Ignoring unidentified line in obj file: " << curLine << endl;
+                    // cout << "Ignoring unidentified line in obj file: " << curLine << endl;
                 }
             }
             
@@ -818,7 +818,7 @@ void InitEnemies() {
         enemies.push_back(enemy);
     }
     
-    cout << "Enemies created." << endl;
+    // cout << "Enemies created." << endl;
 }
 
 
