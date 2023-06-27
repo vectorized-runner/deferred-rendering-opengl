@@ -189,7 +189,7 @@ Camera camera;
 Input input;
 Time gameTime;
 int wireframeMode = 0;
-int renderMode = 0;
+int renderDeferred = 0;
 bool firstFrame = true;
 random_device rd;
 mt19937 gen(rd());
@@ -635,9 +635,9 @@ void OnKeyAction(GLFWwindow* window, int key, int scancode, int action, int mods
     }
     else if(key == GLFW_KEY_F){
         if(isPress){
-            renderMode = !renderMode;
+            renderDeferred = !renderDeferred;
             
-            if(renderMode == 1){
+            if(renderDeferred == 1){
                 InitDeferredRendering();
             }
             else{
@@ -952,7 +952,7 @@ void UpdateLightDataForShader(Shader shader){
 }
 
 int GetRenderShader(const Mesh& mesh){
-    if(renderMode == 0){
+    if(renderDeferred == 0){
         // Forward
         return mesh.forwardShader.programId;
     }
@@ -1456,7 +1456,7 @@ void DrawSceneDeferred(){
 }
 
 void DrawScene(){
-    if(renderMode == 0){
+    if(renderDeferred == 0){
         DrawSceneForward();
     } else{
         DrawSceneDeferred();
