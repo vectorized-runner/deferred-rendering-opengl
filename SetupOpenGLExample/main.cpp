@@ -196,6 +196,7 @@ mt19937 gen(rd());
 
 Shader objShaderDeferred;
 Shader objShaderForward;
+Shader lightShaderForward;
 
 const float intensityMin = 5.0f;
 const float intensityMax = 100.0f;
@@ -1107,6 +1108,10 @@ void CreateShaders(){
     objShaderDeferred = CreateShaderProgram(
                                         GetPath("shaders/vert_deferred.glsl").data(),
                                         GetPath("shaders/frag_deferred.glsl").data());
+    
+    lightShaderForward = CreateShaderProgram(
+                                        GetPath("shaders/vert_lights.glsl").data(),
+                                        GetPath("shaders/frag_lights.glsl").data());
 }
 
 void InitProgram(GLFWwindow* window){
