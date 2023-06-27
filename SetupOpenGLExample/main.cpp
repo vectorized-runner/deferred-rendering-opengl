@@ -243,7 +243,7 @@ int GetMeshIndex(const string& path){
 }
 
 string GetPath(string originalPath){
-    // TODO: Replace after we're out of MAC
+    // TODO: Replace this with your own project path
     return "/Users/bartubas/Homeworks/deferred-rendering-project/SetupOpenGLExample/" + originalPath;
     // return originalPath;
 }
