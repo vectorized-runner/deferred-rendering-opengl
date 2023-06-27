@@ -28,7 +28,7 @@ void main()
     vec3 FragPos = texture(gPosition, TexCoords).rgb;
     vec3 Normal = texture(gNormal, TexCoords).rgb;
     vec3 Diffuse = texture(gAlbedoSpec, TexCoords).rgb;
-    float Specular = texture(gAlbedoSpec, TexCoords).a;
+    vec3 Specular = vec3(texture(gAlbedoSpec, TexCoords).a);
     
     vec3 totalDiffuse = vec3(0, 0, 0);
     vec3 totalSpecular = vec3(0, 0, 0);
