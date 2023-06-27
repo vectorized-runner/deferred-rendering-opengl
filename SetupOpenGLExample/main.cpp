@@ -1375,11 +1375,13 @@ void DrawSceneForward(){
     DrawScene();
 }
 
+void RenderQuad(){
+    // TODO:
+}
+
 // TODO: Actual implementation of each method in here.
 void DrawSceneDeferred(){
     
-    /*
-
     // 1. geometry pass: render scene's geometry/color data into gbuffer
     // -----------------------------------------------------------------
     glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
@@ -1404,10 +1406,9 @@ void DrawSceneDeferred(){
     // send light relevant uniforms
     glUniform3fv(glGetUniformLocation(deferredLightShader.programId, "cameraPos"), 1, glm::value_ptr(camera.position));
     CheckError();
-    
 
     // finally render quad
-    renderQuad();
+    RenderQuad();
 
     // 2.5. copy content of geometry's depth buffer to default framebuffer's depth buffer
     // ----------------------------------------------------------------------------------
@@ -1425,6 +1426,7 @@ void DrawSceneDeferred(){
 
     // 3. render lights on top of scene
     // --------------------------------
+    /*
     shaderLightBox.use();
     shaderLightBox.setMat4("projection", projection);
     shaderLightBox.setMat4("view", view);
