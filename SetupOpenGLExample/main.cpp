@@ -1009,13 +1009,22 @@ void InitLights(){
     }
 }
 
+int GetRenderShader(const Mesh& mesh){
+    if(renderMode == 0){
+        // Forward
+        return mesh.forwardShader.programId;
+    }
+    
+    return mesh.deferredShader.programId;
+}
+
 void AddRandomObjs(){
     auto armadillo = Object();
     armadillo.name = "Armadillo";
     armadillo.transform.position = vec3(15.0f, 0.0f, 15.0f);
     armadillo.transform.scale = vec3(5, 5, 5);
     armadillo.meshIndices.push_back(CreateMesh("armadillo.obj", objShaderForward, objShaderDeferred));
-    auto programId = GetMesh(armadillo.meshIndices[0]).shader.programId;
+    auto programId = GetRenderShader(GetMesh(armadillo.meshIndices[0]));
     glUseProgram(programId);
     float color[] = {0.8f, 0.0f, 0.0f};
     int colorLoc = glGetUniformLocation(programId, "tint");
@@ -1027,7 +1036,7 @@ void AddRandomObjs(){
     bunny.transform.position = vec3(-15, 0.0f, -15.0f);
     bunny.transform.scale = vec3(10, 10, 10);
     bunny.meshIndices.push_back(CreateMesh("bunny.obj", objShaderForward, objShaderDeferred));
-    programId = GetMesh(bunny.meshIndices[0]).shader.programId;
+    programId = GetRenderShader(GetMesh(bunny.meshIndices[0]));
     glUseProgram(programId);
     float color1[] = {0.8f, 0.8f, 0.0f};
     glUniform3fv(colorLoc, 1, color1);
@@ -1037,8 +1046,8 @@ void AddRandomObjs(){
     teapot.name = "Teapot";
     teapot.transform.position = vec3(-15, 0.0f, 15.0f);
     teapot.transform.scale = vec3(5, 5, 5);
-    teapot.meshIndices.push_back(CreateMesh("teapot.obj", "shaders/vert.glsl", "shaders/frag.glsl"));
-    programId = GetMesh(teapot.meshIndices[0]).shader.programId;
+    teapot.meshIndices.push_back(CreateMesh("teapot.obj", objShaderForward, objShaderDeferred));
+    programId = GetRenderShader(GetMesh(teapot.meshIndices[0]));
     glUseProgram(programId);
     float color2[] = {0.0f, 0.8f, 0.8f};
     glUniform3fv(colorLoc, 1, color2);
